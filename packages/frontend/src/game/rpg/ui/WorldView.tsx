@@ -9,6 +9,7 @@ import type {
   DialogueScene,
 } from '../../types';
 import {
+  battleCommands,
   heal,
   isCleared,
   livingCreatures,
@@ -192,26 +193,18 @@ export function WorldView({
     sfx.play(
       result === 'won' ? 'victory' : result === 'lost' ? 'faint' : 'select'
     );
-    if (result === 'lost') {
-      onCampaign(respawn(next));
-      bus.send({ type: 'respawn' });
-      flash('You fainted… the hub healers patch you up.');
-    } else {
-      onCampaign(next);
-      if (battle.kind === 'creature' && result !== 'escaped') {
-        bus.send({ type: 'remove-creature', id: battle.creatureId });
-        bus.send({ type: 'fx', fx: result === 'won' ? 'victory' : 'hit' });
-      }
-      if (battle.kind === 'boss' && result === 'won') {
-        bus.send({ type: 'remove-boss', region: chapter.id });
-        bus.send({ type: 'fx', fx: 'victory' });
-        flash(
-          isCleared(next, chapter)
-            ? `${regionOf(chapter.id).name} cleared!`
-            : 'Boss defeated! Creatures still roam here.'
-        );
-      }
-    }
+    // World and campaign stay in step: removals and respawn come from one pure rule.
+    battleCommands(battle, next, result).forEach((c) => bus.send(c));
+    onCampaign(result === 'lost' ? respawn(next) : next);
+    if (result === 'lost') flash('You fainted… the hub healers patch you up.');
+    else if (result !== 'escaped')
+      bus.send({ type: 'fx', fx: result === 'fled' ? 'hit' : 'victory' });
+    if (battle.kind === 'boss' && next.bossesDefeated.includes(chapter.id))
+      flash(
+        isCleared(next, chapter)
+          ? `${regionOf(chapter.id).name} cleared!`
+          : 'Boss defeated! Creatures still roam here.'
+      );
     close();
   }
 

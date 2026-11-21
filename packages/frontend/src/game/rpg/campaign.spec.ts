@@ -4,6 +4,7 @@ import type { Chapter, QuestionScene } from '../types';
 import {
   CREATURE_HIT,
   answer,
+  battleCommands,
   heal,
   isCleared,
   newCampaign,
@@ -188,6 +189,45 @@ describe('boss battles', () => {
       foeHp: 100,
       foeMax: 100,
     });
+  });
+});
+
+describe('after a battle', () => {
+  it('removes a boss whose last question was answered even when the player faints', () => {
+    const c = { ...newCampaign('beginner'), hp: 20, answered: { b1: 100 } };
+    const b = startBossBattle(c, chapter)!;
+    const out = answer(
+      c,
+      b,
+      { kind: 'order', items: ['d', 'c', 'b', 'a'] },
+      false
+    );
+    expect(out.result).toBe('lost');
+    expect(battleCommands(b, out.campaign, out.result)).toEqual([
+      { type: 'remove-boss', region: 'onelake' },
+      { type: 'respawn' },
+    ]);
+  });
+
+  it('removes a creature the player fainted against', () => {
+    const c = { ...newCampaign('beginner'), hp: 20 };
+    const b = startCreatureBattle(c, chapter, 'x1')!;
+    const out = answer(c, b, wrong, false);
+    expect(battleCommands(b, out.campaign, out.result)).toEqual([
+      { type: 'remove-creature', id: 'x1' },
+      { type: 'respawn' },
+    ]);
+  });
+
+  it('keeps a creature in the world when the player runs away', () => {
+    const c = newCampaign('beginner');
+    const b = startCreatureBattle(c, chapter, 'x1')!;
+    expect(battleCommands(b, c, 'escaped')).toEqual([]);
+  });
+
+  it('never starts a battle with a creature that is already gone', () => {
+    const c = { ...newCampaign('beginner'), defeatedCreatures: ['x1'] };
+    expect(startCreatureBattle(c, chapter, 'x1')).toBeNull();
   });
 });
 

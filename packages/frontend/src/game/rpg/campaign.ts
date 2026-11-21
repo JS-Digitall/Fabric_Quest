@@ -1,3 +1,4 @@
+import type { UiCommand } from './phaser/bus';
 import { REGIONS, creatureSpots, type Spot } from './world';
 import { scenesFor, scoreAnswer } from '../engine';
 import type {
@@ -77,6 +78,7 @@ export function startCreatureBattle(
   chapter: Chapter,
   creatureId: string
 ): Battle | null {
+  if (c.defeatedCreatures.includes(creatureId)) return null;
   const q = poolFor(chapter, c.difficulty).choice.find(unanswered(c));
   if (!q) return null;
   return {
@@ -166,6 +168,24 @@ export function answer(
     playerDamage,
     result,
   };
+}
+
+/**
+ * What the world must do after a battle. A foe that the campaign counts as gone is removed
+ * even when the player fainted on the same answer, so no "ghost" foe is left blocking the way.
+ */
+export function battleCommands(
+  b: Battle,
+  next: Campaign,
+  result: AnswerOutcome['result'] | 'escaped'
+): UiCommand[] {
+  const commands: UiCommand[] = [];
+  if (b.kind === 'creature' && next.defeatedCreatures.includes(b.creatureId))
+    commands.push({ type: 'remove-creature', id: b.creatureId });
+  if (b.kind === 'boss' && next.bossesDefeated.includes(b.region))
+    commands.push({ type: 'remove-boss', region: b.region });
+  if (result === 'lost') commands.push({ type: 'respawn' });
+  return commands;
 }
 
 export function heal(c: Campaign, amount: number): Campaign {
