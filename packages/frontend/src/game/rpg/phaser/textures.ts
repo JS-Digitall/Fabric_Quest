@@ -194,7 +194,13 @@ export const NPC_PALETTES: Record<RegionId, Palette> = {
 };
 
 /** Person frame: dir 0 = down, 1 = up, 2 = side; step 0/1 alternates legs. */
-function drawPerson(c: Ctx, ox: number, p: Palette, dir: number, step: number) {
+export function drawPerson(
+  c: Ctx,
+  ox: number,
+  p: Palette,
+  dir: number,
+  step: number
+) {
   const o = (x: number, y: number, w: number, h: number, col: string) =>
     px(c, ox + x, y, w, h, col);
   // shadow
@@ -227,7 +233,7 @@ function drawPerson(c: Ctx, ox: number, p: Palette, dir: number, step: number) {
 }
 
 /** A "Data Chaos" blob: rounded body, glitchy stripes, big eyes. */
-function drawCreature(c: Ctx, ox: number, color: string, frame: number) {
+export function drawCreature(c: Ctx, ox: number, color: string, frame: number) {
   const o = (x: number, y: number, w: number, h: number, col: string) =>
     px(c, ox + x, y, w, h, col);
   const b = frame; // bob
@@ -254,7 +260,7 @@ function drawCreature(c: Ctx, ox: number, color: string, frame: number) {
 }
 
 /** A 32 px boss: a crowned chaos block with glowing core. */
-function drawBoss(c: Ctx, ox: number, color: string, frame: number) {
+export function drawBoss(c: Ctx, ox: number, color: string, frame: number) {
   const o = (x: number, y: number, w: number, h: number, col: string) =>
     px(c, ox + x, y, w, h, col);
   const b = frame * 2;

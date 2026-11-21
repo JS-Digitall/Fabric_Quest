@@ -1,3 +1,4 @@
+import { REGIONS, creatureSpots, type Spot } from './world';
 import { scenesFor, scoreAnswer } from '../engine';
 import type {
   Answer,
@@ -191,4 +192,12 @@ export function isCleared(c: Campaign, chapter: Chapter): boolean {
     c.bossesDefeated.includes(chapter.id) &&
     poolFor(chapter, c.difficulty).choice.every((q) => q.id in c.answered)
   );
+}
+
+/** One creature per creature question for the difficulty, minus those already met. */
+export function livingCreatures(c: Campaign, chapters: Chapter[]): Spot[] {
+  return REGIONS.flatMap((r) => {
+    const chapter = chapters.find((ch) => ch.id === r.id)!;
+    return creatureSpots(r.id, poolFor(chapter, c.difficulty).choice.length);
+  }).filter((s) => !c.defeatedCreatures.includes(s.id));
 }
