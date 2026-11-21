@@ -5,11 +5,10 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-import { EmptyStatePreview } from './EmptyStatePreview';
+import { GameApp } from './game/GameApp';
 
-// Replace this starting view with your app. See README.md for welcome cleanup.
 function App() {
-  return <EmptyStatePreview />;
+  return <GameApp />;
 }
 
 export default App;

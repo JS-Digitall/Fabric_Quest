@@ -63,7 +63,7 @@ export default defineConfig({
       },
     }),
     tailwindcss(),
-    rayfinLocalDev({ autoLogin: true, sourceActivity: true }),
+    rayfinLocalDev({ autoLogin: true }),
     localNetworkAccessPlugin,
   ],
   resolve: {
