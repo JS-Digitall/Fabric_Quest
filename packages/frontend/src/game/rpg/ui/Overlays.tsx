@@ -135,7 +135,7 @@ export function ChestCard({
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="w-full max-w-md rounded-4xl bg-background p-600 text-foreground shadow-2xl"
+        className="rpg-panel w-full max-w-md p-600"
         initial={{ scale: 0.7, rotate: -4 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 240, damping: 16 }}

@@ -141,7 +141,7 @@ export function BattleScreen({
       <div className="mx-auto grid max-w-7xl items-start gap-500 px-500 py-600 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         {/* Arena */}
         <div
-          className="relative grid grid-cols-2 items-end gap-600 overflow-hidden rounded-4xl p-600 lg:sticky lg:top-600"
+          className="rpg-panel relative grid grid-cols-2 items-end gap-600 overflow-hidden p-600 lg:sticky lg:top-600"
           style={{
             background: `radial-gradient(circle at 70% 30%, ${region.tint}55, transparent 60%), linear-gradient(180deg, #1c2843, #0d1424)`,
           }}
@@ -214,7 +214,7 @@ export function BattleScreen({
           key={q.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-4xl bg-background p-600 text-foreground shadow-2xl"
+          className="rpg-panel p-600"
         >
           <div className="flex items-center gap-300 text-200 font-semibold uppercase tracking-widest text-muted-foreground">
             <Swords className="icon-size-200" aria-hidden />

@@ -12,7 +12,8 @@ export function StoryChart({ chart }: { chart: ChartData }) {
   const spec: VisualizationSpec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     description: chart.title,
-    mark: { type: 'bar', cornerRadiusEnd: 6 },
+    // Bright window teal: the page theme's teal is too dark on the navy battle window.
+    mark: { type: 'bar', cornerRadiusEnd: 4, color: '#2bc4ad' },
     encoding: {
       x: { field: chart.x, type: 'nominal', sort: null },
       y: { field: chart.y, type: 'quantitative' },
@@ -39,6 +40,18 @@ export function StoryChart({ chart }: { chart: ChartData }) {
         spec={spec}
         data={data}
         theme={theme}
+        // Charts only appear inside the dark battle window; the theme hook reads the
+        // page root, so pin the axis ink to the window instead of the page theme.
+        configVegaLite={{
+          background: 'transparent',
+          axis: {
+            labelColor: '#b8c2d9',
+            titleColor: '#f4f1e8',
+            gridColor: '#3d5490',
+            domainColor: '#3d5490',
+            tickColor: '#3d5490',
+          },
+        }}
         style={{ height: 240 }}
       />
     </figure>

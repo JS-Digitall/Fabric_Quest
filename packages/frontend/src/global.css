@@ -269,3 +269,67 @@ body,
     animation: none;
   }
 }
+
+/*
+ * JRPG menu windows (battles, chests). The shared quiz components use semantic
+ * tokens, so re-scoping the tokens here re-skins them without touching their code.
+ * Always the same "night window" look, in light and dark mode — like the HUD.
+ */
+.rpg-panel {
+  --color-background: #14213d;
+  --color-foreground: #f4f1e8;
+  --color-card: #1b2a4e;
+  --color-card-foreground: #f4f1e8;
+  --color-muted: #23345f;
+  --color-muted-foreground: #b8c2d9;
+  --color-accent: #2a3d6e;
+  --color-accent-foreground: #f4f1e8;
+  --color-border: #3d5490;
+  --color-primary: #ffd23f;
+  --color-primary-foreground: #14213d;
+  --color-primary-shadow: #a8800a;
+  --color-ring: #ffd23f;
+  --color-success: #4fe08f;
+  --color-destructive: #ff7a5c;
+  --color-warning: #ffd23f;
+  --radius-xl: 3px;
+  --radius-2xl: 4px;
+  --radius-3xl: 6px;
+  --radius-4xl: 8px;
+  --font-heading: 'Pixelify Sans', 'Bricolage Grotesque', sans-serif;
+  /* Pixelify's fl ligature reads as "A" ("floors" -> "Aoors"). */
+  font-variant-ligatures: none;
+
+  position: relative;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  border: 4px solid #f4f1e8;
+  border-radius: 10px;
+  /* A dark outer ring plus a soft drop: the classic two-tone window frame. */
+  box-shadow:
+    0 0 0 4px #0b1224,
+    inset 0 0 0 2px #0b1224,
+    0 18px 40px rgb(0 0 0 / 0.45);
+}
+
+/* Blinking selection cursor on answer options. */
+.rpg-panel ul > li > button {
+  position: relative;
+}
+.rpg-panel ul > li > button:is(:hover, :focus-visible):not(:disabled)::before {
+  content: '\25B6\FE0E'; /* text-style triangle, not the blue emoji tile */
+  position: absolute;
+  left: -1.35rem;
+  color: var(--color-primary);
+  animation: rpg-blink 0.7s steps(2, jump-none) infinite;
+}
+@keyframes rpg-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rpg-panel ul > li > button::before {
+    animation: none !important;
+  }
+}
