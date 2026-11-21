@@ -79,11 +79,13 @@ export function BattleScreen({
   campaign: initialCampaign,
   battle: initialBattle,
   onEnd,
+  onAnswered,
 }: {
   chapter: Chapter;
   campaign: Campaign;
   battle: Battle;
   onEnd: (campaign: Campaign, result: BattleEnd) => void;
+  onAnswered?: (correct: boolean) => void;
 }) {
   const [campaign, setCampaign] = useState(initialCampaign);
   const [battle, setBattle] = useState(initialBattle);
@@ -108,6 +110,7 @@ export function BattleScreen({
     setOutcome({ ...out, given: a });
     setCampaign(out.campaign);
     setFoeHp(Math.max(0, battle.foeHp - out.foeDamage));
+    onAnswered?.(out.correct);
   }
 
   function next() {
@@ -132,10 +135,11 @@ export function BattleScreen({
       aria-modal="true"
       aria-label={`Battle against ${foeName}`}
     >
-      <div className="mx-auto max-w-4xl px-500 py-600">
+      {/* Wide screens: arena pinned on the left so hits stay in view while answering. */}
+      <div className="mx-auto grid max-w-7xl items-start gap-500 px-500 py-600 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         {/* Arena */}
         <div
-          className="relative grid grid-cols-2 items-end gap-600 overflow-hidden rounded-4xl p-600"
+          className="relative grid grid-cols-2 items-end gap-600 overflow-hidden rounded-4xl p-600 lg:sticky lg:top-600"
           style={{
             background: `radial-gradient(circle at 70% 30%, ${region.tint}55, transparent 60%), linear-gradient(180deg, #1c2843, #0d1424)`,
           }}
@@ -208,7 +212,7 @@ export function BattleScreen({
           key={q.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-500 rounded-4xl bg-background p-600 text-foreground shadow-2xl"
+          className="rounded-4xl bg-background p-600 text-foreground shadow-2xl"
         >
           <div className="flex items-center gap-300 text-200 font-semibold uppercase tracking-widest text-muted-foreground">
             <Swords className="icon-size-200" aria-hidden />

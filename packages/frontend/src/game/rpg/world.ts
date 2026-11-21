@@ -206,6 +206,23 @@ function paint(): string[] {
   fill({ x: HUB.x - 1, y: HUB.y - 1, w: HUB.w + 2, h: HUB.h + 2 }, 'flowers');
   fill(HUB, 'stone');
   fill({ x: SPAWN.x - 2, y: SPAWN.y - 1, w: 4, h: 2 }, 'path');
+  // Four cottages with doorsteps, a pond and a few trees — kept clear of the centre paths.
+  for (const [hx, hy] of [
+    [HUB.x + 1, HUB.y + 1],
+    [HUB.x + HUB.w - 5, HUB.y + 1],
+    [HUB.x + 1, HUB.y + HUB.h - 4],
+    [HUB.x + HUB.w - 5, HUB.y + HUB.h - 4],
+  ]) {
+    fill({ x: hx, y: hy, w: 4, h: 2 }, 'wall');
+    set(hx + 1, hy + 2, 'path');
+  }
+  fill({ x: HUB.x + 6, y: SPAWN.y - 1, w: 3, h: 2 }, 'water');
+  fill({ x: HUB.x + HUB.w - 9, y: SPAWN.y - 1, w: 3, h: 2 }, 'flowers');
+  for (const [tx, ty] of [
+    [HUB.x + 6, HUB.y + 1],
+    [HUB.x + HUB.w - 7, HUB.y + HUB.h - 2],
+  ])
+    set(tx, ty, 'tree');
 
   // Paths from the hub to every region door (vertical, horizontal, vertical).
   for (const r of REGIONS) {

@@ -352,4 +352,12 @@ export function buildTextures(scene: Phaser.Scene) {
   sheet(scene, 'spark', 4, 4, 1, (c) => {
     px(c, 0, 0, 4, 4, '#ffffff');
   });
+  // Speech-bubble "!" shown over things you can interact with.
+  sheet(scene, 'prompt', 10, 12, 1, (c) => {
+    px(c, 1, 0, 8, 9, '#14213d');
+    px(c, 2, 1, 6, 7, '#ffffff');
+    px(c, 4, 2, 2, 3, '#ef6f52');
+    px(c, 4, 6, 2, 1, '#ef6f52');
+    px(c, 4, 9, 2, 2, '#14213d');
+  });
 }

@@ -57,6 +57,8 @@ export class WorldScene extends Phaser.Scene {
   private chests = new Map<string, Phaser.GameObjects.Sprite>();
   private npcs: { sprite: Phaser.GameObjects.Sprite; spot: Spot }[] = [];
   private sparks!: Phaser.GameObjects.Particles.ParticleEmitter;
+  private prompt!: Phaser.GameObjects.Sprite;
+  private promptBaseY = 0;
   private paused = false;
   /** Short grace period after a battle so the player can walk away. */
   private safeUntil = 0;
@@ -172,6 +174,20 @@ export class WorldScene extends Phaser.Scene {
       emitting: false,
     });
     this.sparks.setDepth(20);
+
+    this.prompt = this.add
+      .sprite(0, 0, 'prompt')
+      .setDepth(30)
+      .setVisible(false);
+    this.tweens.addCounter({
+      from: 0,
+      to: 1,
+      duration: 500,
+      yoyo: true,
+      repeat: -1,
+      onUpdate: (t) =>
+        this.prompt.setY(this.promptBaseY - (t.getValue() ?? 0) * 3),
+    });
 
     // Camera: follow the player across the whole map.
     const cam = this.cameras.main;
@@ -361,6 +377,12 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
+    // Float a "!" over whatever Space would interact with.
+    const target = this.target(tx, ty);
+    this.prompt.setVisible(!!target);
+    if (target) this.prompt.setX(center(target.x));
+    if (target) this.promptBaseY = center(target.y) - 16;
+
     if (
       Phaser.Input.Keyboard.JustDown(k.space) ||
       Phaser.Input.Keyboard.JustDown(k.enter)
@@ -368,8 +390,22 @@ export class WorldScene extends Phaser.Scene {
       this.interact(tx, ty);
   }
 
+  /** Any adjacent tile counts, diagonals included. */
+  private near(s: Spot, tx: number, ty: number) {
+    return Math.max(Math.abs(s.x - tx), Math.abs(s.y - ty)) <= 1;
+  }
+
+  private target(tx: number, ty: number): Spot | undefined {
+    return (
+      this.npcs.find((n) => this.near(n.spot, tx, ty))?.spot ??
+      CHESTS.find(
+        (c) => this.near(c, tx, ty) && this.chests.get(c.id)?.frame.name === '0'
+      )
+    );
+  }
+
   private interact(tx: number, ty: number) {
-    const near = (s: Spot) => Math.abs(s.x - tx) + Math.abs(s.y - ty) <= 1;
+    const near = (s: Spot) => this.near(s, tx, ty);
     const npc = this.npcs.find((n) => near(n.spot));
     if (npc) {
       // Turn the NPC to face the player.

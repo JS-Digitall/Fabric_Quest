@@ -21,6 +21,7 @@ import {
   type RegionId,
 } from '../campaign';
 import { createBus } from '../phaser/bus';
+import { createSfx } from '../sound';
 import { PhaserGame } from '../phaser/PhaserGame';
 import { REGIONS, SPAWN, type Region } from '../world';
 import { BattleScreen, type BattleEnd } from './BattleScreen';
@@ -73,6 +74,18 @@ export function WorldView({
   );
   const [pos, setPos] = useState(SPAWN);
   const [muted, setMuted] = useState(true);
+  const sfx = useMemo(() => createSfx(), []);
+  const touchedMute = useRef(false);
+  useEffect(() => sfx.setMuted(muted), [sfx, muted]);
+  // Browsers only allow audio after a gesture: switch sound on with the first key press,
+  // unless the player already chose a setting.
+  useEffect(() => {
+    const first = () => {
+      if (!touchedMute.current) setMuted(false);
+    };
+    window.addEventListener('keydown', first, { once: true });
+    return () => window.removeEventListener('keydown', first);
+  }, []);
 
   // The bus handler is registered once; read the latest campaign through a ref.
   const latest = useRef(campaign);
@@ -103,8 +116,10 @@ export function WorldView({
             break;
           case 'step':
             setPos({ x: e.x, y: e.y });
+            sfx.play('step');
             break;
           case 'npc': {
+            sfx.play('talk');
             const lines = dialogues(chapterOf(e.region));
             const scene = isCleared(c, chapterOf(e.region))
               ? lines[lines.length - 1]
@@ -120,6 +135,7 @@ export function WorldView({
               openedChests: [...c.openedChests, e.id],
             };
             onCampaign(next);
+            sfx.play('heal');
             bus.send({ type: 'open-chest', id: e.id });
             bus.send({ type: 'fx', fx: 'heal' });
             setOverlay({
@@ -135,6 +151,7 @@ export function WorldView({
               bus.send({ type: 'remove-creature', id: e.id });
               return bus.send({ type: 'resume' });
             }
+            sfx.play('select');
             setOverlay({
               kind: 'battle',
               chapter: chapterOf(e.region),
@@ -146,6 +163,7 @@ export function WorldView({
           case 'boss': {
             const battle = startBossBattle(c, chapterOf(e.region));
             if (!battle) return bus.send({ type: 'resume' });
+            sfx.play('select');
             setOverlay({
               kind: 'battle',
               chapter: chapterOf(e.region),
@@ -156,7 +174,7 @@ export function WorldView({
           }
         }
       }),
-    [bus, onCampaign]
+    [bus, onCampaign, sfx]
   );
 
   function close() {
@@ -171,6 +189,9 @@ export function WorldView({
     result: BattleEnd
   ) {
     if (result !== 'escaped') onResult(chapter.id, regionResult(next, chapter));
+    sfx.play(
+      result === 'won' ? 'victory' : result === 'lost' ? 'faint' : 'select'
+    );
     if (result === 'lost') {
       onCampaign(respawn(next));
       bus.send({ type: 'respawn' });
@@ -207,7 +228,10 @@ export function WorldView({
         fps={fps}
         pos={pos}
         muted={muted}
-        onToggleMute={() => setMuted((m) => !m)}
+        onToggleMute={() => {
+          touchedMute.current = true;
+          setMuted((m) => !m);
+        }}
         onSummary={onSummary}
       />
       <AnimatePresence>
@@ -239,6 +263,7 @@ export function WorldView({
             onEnd={(next, result) =>
               endBattle(overlay.chapter, overlay.battle, next, result)
             }
+            onAnswered={(correct) => sfx.play(correct ? 'select' : 'hit')}
           />
         )}
       </AnimatePresence>
