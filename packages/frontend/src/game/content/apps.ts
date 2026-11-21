@@ -23,7 +23,7 @@ export const apps: Chapter = {
       id: 'apps-paging',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'The order list in our app shows exactly 100 rows, but the table holds 2,500. Why?',
+        'The Limit Golem King smirks at Aurora’s order list: exactly 100 rows shown, though the table holds 2,500. Why?',
       chart: {
         title: 'Rows in table vs. rows shown in the app',
         x: 'Measure',
@@ -50,7 +50,7 @@ export const apps: Chapter = {
       id: 'apps-kql',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'Which data source can’t you add as a new connector in this release?',
+        'The Limit Golem bars the forge door: one data source can’t be added as a new connector in this release. Which one?',
       options: [
         'A Power BI semantic model',
         'An Eventhouse KQL database',
@@ -67,7 +67,7 @@ export const apps: Chapter = {
       id: 'apps-m2m',
       difficulties: ['practitioner', 'expert'],
       prompt:
-        'Students and courses need a many-to-many relationship. How do you model it?',
+        'The golem welds students to courses and dares you to model a many-to-many relationship in your Fabric App. How do you do it?',
       options: [
         'Use @many() on both sides',
         'Many-to-many isn’t supported — add a join entity with two @one() navigations',
@@ -84,7 +84,7 @@ export const apps: Chapter = {
       id: 'apps-count',
       difficulties: ['practitioner', 'expert'],
       prompt:
-        'You need the number of open tickets. What works on the fluent GraphQL client?',
+        'The golem hides the forge’s ticket counter. You need the number of open tickets — what works on the fluent GraphQL client?',
       options: [
         'Call count()',
         'Select minimal fields and use results.length',
@@ -100,7 +100,8 @@ export const apps: Chapter = {
       kind: 'choice',
       id: 'apps-zip',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'How big may the compressed static hosting upload of an app be?',
+      prompt:
+        'The golem weighs your app at the forge gate. How big may the compressed static hosting upload of an app be?',
       options: ['10 MB', '100 MB', '1 GB', 'Unlimited'],
       answer: 1,
       explanation:
@@ -112,7 +113,7 @@ export const apps: Chapter = {
       id: 'apps-timeout',
       difficulties: ['expert'],
       prompt:
-        'A trusted function crunches numbers for 6 minutes. What happens?',
+        'A trusted function crunches numbers for six minutes while the golem watches the clock. What happens?',
       options: [
         'It finishes fine',
         'The host aborts it — invocations are capped at 250 seconds',
@@ -128,7 +129,8 @@ export const apps: Chapter = {
       kind: 'choice',
       id: 'apps-text',
       difficulties: ['expert'],
-      prompt: 'Why should every string field use @text({ max: N })?',
+      prompt:
+        'The golem tosses an unbounded string field into the furnace. Why should every string field use @text({ max: N })?',
       options: [
         'It is only a style rule',
         'Without max, MSSQL gets NVARCHAR(MAX), which can break the generated GraphQL schema',
@@ -145,7 +147,7 @@ export const apps: Chapter = {
       id: 'apps-anon',
       difficulties: ['beginner', 'practitioner'],
       prompt:
-        'You want visitors to read data without signing in (@anonymous). What do you need on Fabric?',
+        'Mira wants conference visitors to read data without signing in (@anonymous). The golem grins. What do you need on Fabric?',
       options: [
         'Nothing',
         'A tenant admin must enable anonymous data access for Fabric Apps',
@@ -161,7 +163,8 @@ export const apps: Chapter = {
       kind: 'match',
       id: 'apps-platform',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'Fabric Apps on Microsoft Fabric — match the topic to the rule.',
+      prompt:
+        'The Limit Golem King scrambles the forge’s rulebook for Fabric Apps on Microsoft Fabric. Match each topic to its rule.',
       pairs: [
         ['Language', 'TypeScript only'],
         ['Database', 'MSSQL only'],

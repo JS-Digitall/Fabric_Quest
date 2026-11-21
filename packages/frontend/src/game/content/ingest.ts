@@ -25,7 +25,7 @@ export const ingest: Chapter = {
       id: 'ingest-bronze',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'You are ingesting raw (bronze) data and will soon need scheduling, schema mapping and incremental loads. Where do you start?',
+        'The Pipeline Gremlin dumps a mountain of raw bronze data at the foundry gate. Jonas will soon need scheduling, schema mapping and incremental loads. Where do you start?',
       options: [
         'Mirroring',
         'Copy job',
@@ -43,7 +43,7 @@ export const ingest: Chapter = {
       id: 'ingest-gold',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'Another team already processes curated (gold) data elsewhere. You just need it in Fabric for reporting, simply and cheaply.',
+        'The gremlin sneers: “The webshop team already curates gold data elsewhere — rebuild it all yourself!” You only need it in Fabric for reporting, simply and cheaply. What do you use?',
       options: [
         'Mirroring',
         'Copy activity in a pipeline',
@@ -61,7 +61,7 @@ export const ingest: Chapter = {
       id: 'ingest-stream',
       difficulties: ['beginner', 'practitioner'],
       prompt:
-        'Clickstream events need low-latency, event-driven ingestion. Which tool?',
+        'Clickstream sparks fly through the foundry faster than the gremlin can catch them. Which tool handles low-latency, event-driven ingestion?',
       options: ['Copy job', 'Mirroring', 'Eventstreams', 'Dataflow Gen2'],
       answer: 2,
       explanation:
@@ -73,7 +73,7 @@ export const ingest: Chapter = {
       id: 'ingest-orchestrate',
       difficulties: ['practitioner', 'expert'],
       prompt:
-        'You need parameterized, metadata-driven ingestion of 200 tables plus complex orchestration. What fits best?',
+        'The gremlin chains 200 tables to the conveyor belt and demands parameterized, metadata-driven ingestion with complex orchestration. What fits best?',
       options: [
         'Mirroring',
         'Copy activity in a pipeline',
@@ -90,7 +90,7 @@ export const ingest: Chapter = {
       id: 'ingest-dataflow',
       difficulties: ['beginner', 'practitioner'],
       prompt:
-        'Which item gives you a low-code interface with 300+ transformations?',
+        'Jonas’s analysts want to shape data without code. Which item gives them a low-code interface with 300+ transformations?',
       options: ['Dataflow Gen2', 'Copy job', 'Mirroring', 'A shortcut'],
       answer: 0,
       explanation:
@@ -101,7 +101,8 @@ export const ingest: Chapter = {
       kind: 'arrange',
       id: 'ingest-pipeline',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'Build the end-to-end flow: put the steps in order.',
+      prompt:
+        'The Pipeline Gremlin King jams the foundry line! Put the steps of the end-to-end flow back in order.',
       items: [
         'Copy job lands raw data in a bronze lakehouse table',
         'Dataflow Gen2 transforms bronze into a gold table',
@@ -116,7 +117,8 @@ export const ingest: Chapter = {
       kind: 'choice',
       id: 'ingest-mirror-dest',
       difficulties: ['expert'],
-      prompt: 'Where does Mirroring write its data?',
+      prompt:
+        'The Gremlin King hurls a mirror at you: “Point me anywhere you like!” Where does Mirroring actually write its data?',
       options: [
         'Any destination you configure',
         'A single, read-only destination in OneLake',
@@ -132,7 +134,8 @@ export const ingest: Chapter = {
       kind: 'match',
       id: 'ingest-match',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'Match each data movement option to its sweet spot.',
+      prompt:
+        'The Gremlin King swaps the foundry’s tool labels. Match each data movement option to its sweet spot.',
       pairs: [
         ['Mirroring', 'Turn-key, near real-time replication'],
         [
@@ -155,7 +158,7 @@ export const ingest: Chapter = {
       speaker: 'Jonas, Data Engineer',
       art: 'pipeline',
       lines: [
-        'Bronze is filling, gold is shining. Time to make it useful for the business.',
+        'Bronze is filling, gold is shining. Priya at the Semantic Spire in the north-east will make it useful for the business.',
       ],
     },
   ],

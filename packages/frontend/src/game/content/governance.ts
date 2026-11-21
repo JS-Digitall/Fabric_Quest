@@ -28,7 +28,8 @@ export const governance: Chapter = {
       kind: 'arrange',
       id: 'governance-roles',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'Order the workspace roles from fewest to most permissions.',
+      prompt:
+        'The Leaky Phantom King shuffles the Citadel’s keys! Order the workspace roles from fewest to most permissions.',
       items: ['Viewer', 'Contributor', 'Member', 'Admin'],
       hint: 'Viewers can only look.',
       explanation:
@@ -40,7 +41,7 @@ export const governance: Chapter = {
       id: 'governance-contributor',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'An analyst must create and modify items in the workspace, but must not share content or add members. Which role?',
+        'Elif’s new analyst must create and modify items in the workspace, but the Leaky Phantom must never trick them into sharing content or adding members. Which role do you hand out?',
       options: ['Viewer', 'Contributor', 'Member', 'Admin'],
       answer: 1,
       explanation:
@@ -51,7 +52,8 @@ export const governance: Chapter = {
       kind: 'choice',
       id: 'governance-delete',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'Which workspace role can delete the workspace?',
+      prompt:
+        'The phantom whispers that anyone can tear down the whole workspace. Which workspace role can actually delete it?',
       options: [
         'Admin only',
         'Admin and Member',
@@ -67,7 +69,8 @@ export const governance: Chapter = {
       kind: 'match',
       id: 'governance-endorse',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'Match each endorsement badge to its meaning.',
+      prompt:
+        'The Phantom King peels the trust badges off the Citadel’s data. Match each endorsement badge to its meaning.',
       pairs: [
         ['Promoted', 'The creators think it is ready for sharing and reuse'],
         [
@@ -87,7 +90,8 @@ export const governance: Chapter = {
       kind: 'choice',
       id: 'governance-dashboards',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'Which item type can NOT be promoted or certified?',
+      prompt:
+        'The phantom stamps “certified” on everything in sight. Which item type can NOT be promoted or certified?',
       options: [
         'Lakehouses',
         'Semantic models',
@@ -104,7 +108,8 @@ export const governance: Chapter = {
       kind: 'choice',
       id: 'governance-purview',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'Where do the sensitivity labels used in Fabric come from?',
+      prompt:
+        'Elif pins sensitivity labels on the salary table so the phantom can’t leak it. Where do the sensitivity labels used in Fabric come from?',
       options: [
         'Each workspace defines its own',
         'Microsoft Purview Information Protection',
@@ -120,7 +125,8 @@ export const governance: Chapter = {
       kind: 'choice',
       id: 'governance-certify',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'Who can certify an item?',
+      prompt:
+        'The phantom forges certification seals. Who can really certify an item?',
       options: [
         'Any item owner',
         'Anyone with write permission',
@@ -136,7 +142,8 @@ export const governance: Chapter = {
       kind: 'choice',
       id: 'governance-catalog',
       difficulties: ['beginner'],
-      prompt: 'Where do you find endorsed items across all your workspaces?',
+      prompt:
+        'Elif wants every trusted item in one place before the phantom muddles them. Where do you find endorsed items across all your workspaces?',
       options: [
         'The OneLake catalog',
         'Windows Explorer',
@@ -154,7 +161,7 @@ export const governance: Chapter = {
       speaker: 'Elif, Security Officer',
       art: 'governance-shield',
       lines: [
-        'Roles set, trusted data badged, labels on. I might sleep tonight.',
+        'Roles set, trusted data badged, labels on. I might sleep tonight. Sam is waiting at the IQ Observatory to the south.',
       ],
     },
   ],

@@ -24,7 +24,8 @@ export const fabriciq: Chapter = {
       kind: 'choice',
       id: 'fabriciq-define',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'What does an ontology in Fabric IQ define?',
+      prompt:
+        'The Context Chimera mixes up “customer” and “account” in every agent’s head. What does an ontology in Fabric IQ define to stop it?',
       options: [
         'Only table and column names',
         'Business entity types, properties, relationships, rules and metrics — bound to real data',
@@ -41,7 +42,8 @@ export const fabriciq: Chapter = {
       kind: 'choice',
       id: 'fabriciq-not-store',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'Does the ontology copy your data into a new data store?',
+      prompt:
+        'The chimera hisses that the ontology hoards a secret copy of Aurora’s data. Does the ontology copy your data into a new data store?',
       options: [
         'Yes, it is a new database',
         'No — it stores definitions and bindings; queries run against the bound sources',
@@ -58,7 +60,7 @@ export const fabriciq: Chapter = {
       id: 'fabriciq-bootstrap',
       difficulties: ['beginner', 'practitioner'],
       prompt:
-        'We already have trusted Power BI semantic models. What is the fastest start?',
+        'Sam already has trusted Power BI semantic models from the Semantic Spire. What is the fastest way to start the ontology?',
       options: [
         'Re-type every definition by hand',
         'Generate the ontology from the semantic models',
@@ -74,7 +76,8 @@ export const fabriciq: Chapter = {
       kind: 'arrange',
       id: 'fabriciq-steps',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'Put the ontology journey in order.',
+      prompt:
+        'The Context Chimera King scatters Sam’s star charts! Put the ontology journey back in order.',
       items: [
         'Define entity types such as Customer and Order',
         'Bind them to data in Fabric sources',
@@ -89,7 +92,7 @@ export const fabriciq: Chapter = {
       id: 'fabriciq-family',
       difficulties: ['practitioner', 'expert'],
       prompt:
-        'Microsoft IQ has several members. Match each to the context it provides.',
+        'The Chimera King has four heads, each claiming a different kind of context. Microsoft IQ has several members — match each to the context it provides.',
       pairs: [
         ['Fabric IQ', 'Business entities and data'],
         ['Work IQ', 'How employees work'],
@@ -104,7 +107,8 @@ export const fabriciq: Chapter = {
       kind: 'choice',
       id: 'fabriciq-rules',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'How are business rules captured in an ontology?',
+      prompt:
+        'The chimera says business rules can only live in code. How are business rules captured in an ontology?',
       options: [
         'In natural language, linked to entities',
         'As Python scripts',
@@ -120,7 +124,8 @@ export const fabriciq: Chapter = {
       kind: 'choice',
       id: 'fabriciq-proposal',
       difficulties: ['expert'],
-      prompt: 'The ontology agent suggests new definitions. What happens next?',
+      prompt:
+        'The ontology agent proposes new definitions — and the chimera wants them applied instantly. What happens next?',
       options: [
         'They are applied immediately',
         'It follows a proposal-first model — you review before applying',
@@ -136,7 +141,8 @@ export const fabriciq: Chapter = {
       kind: 'choice',
       id: 'fabriciq-retire',
       difficulties: ['expert'],
-      prompt: 'When does the old ontology experience retire?',
+      prompt:
+        'The chimera insists the old ontology experience will live forever. When does it retire?',
       options: ['Jan 31, 2027', 'Dec 31, 2026', 'It already retired', 'Never'],
       answer: 0,
       explanation:
@@ -147,7 +153,8 @@ export const fabriciq: Chapter = {
       kind: 'choice',
       id: 'fabriciq-preview',
       difficulties: ['beginner'],
-      prompt: 'What is the release status of the Fabric IQ workload?',
+      prompt:
+        'Before Sam lets the agents loose, the chimera asks a trick question. What is the release status of the Fabric IQ workload?',
       options: [
         'Preview',
         'Retired',
@@ -165,7 +172,7 @@ export const fabriciq: Chapter = {
       speaker: 'Sam, AI Lead',
       art: 'fabric-iq',
       lines: [
-        'Now the agents speak Aurora. Last challenge: ship an app for the whole company.',
+        'Now the agents speak Aurora. Last stop: the App Forge in the south-east, where our app is built — and where Fabric meets its limits.',
       ],
     },
   ],

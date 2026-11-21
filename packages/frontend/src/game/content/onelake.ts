@@ -23,7 +23,8 @@ export const onelake: Chapter = {
       kind: 'choice',
       id: 'onelake-count',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'How many OneLake instances does a Fabric tenant get?',
+      prompt:
+        'The Silo Slime splits into wobbling copies: “Every workspace gets its own lake, right?” How many OneLake instances does a Fabric tenant really get?',
       options: [
         'Exactly one, created automatically',
         'One per workspace',
@@ -41,7 +42,7 @@ export const onelake: Chapter = {
       id: 'onelake-format',
       difficulties: ['beginner', 'practitioner'],
       prompt:
-        'In which open table format do Fabric engines store tables in OneLake?',
+        'The slime drips CSV, Excel and mystery binaries onto the sand. Which open table format do Fabric engines actually store their tables in?',
       options: [
         'CSV',
         'Delta Parquet',
@@ -59,7 +60,7 @@ export const onelake: Chapter = {
       id: 'onelake-shortcut',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'The Finance team owns a table in their workspace. You need it in yours — without duplicating the data. What do you create?',
+        'The Silo Slime guards Finance’s table in their own workspace. Mira needs it in Aurora’s workspace too — without duplicating a single byte. What do you conjure?',
       options: [
         'A nightly copy pipeline',
         'A shortcut',
@@ -76,7 +77,8 @@ export const onelake: Chapter = {
       kind: 'arrange',
       id: 'onelake-hierarchy',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'Order the OneLake hierarchy from broadest to narrowest.',
+      prompt:
+        'The Silo Slime King scrambles the lake’s map! Restore the OneLake hierarchy from broadest to narrowest.',
       items: ['Tenant', 'Workspace', 'Data item (e.g. lakehouse)'],
       hint: 'Tenant policies protect everything below them.',
       explanation:
@@ -87,7 +89,8 @@ export const onelake: Chapter = {
       kind: 'match',
       id: 'onelake-unify',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'Match each OneLake feature to what it does.',
+      prompt:
+        'The Slime King tangles the lake’s four ways of bringing data in. Match each OneLake feature to what it does.',
       pairs: [
         ['Shortcut', 'References data in place without copying it'],
         [
@@ -112,7 +115,7 @@ export const onelake: Chapter = {
       id: 'onelake-spark',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'The SQL team built a warehouse. A data scientist wants the same tables in a Spark notebook. What is needed?',
+        'The slime blocks the jetty: “The SQL team’s warehouse is theirs alone!” A data scientist wants those tables in a Spark notebook. What does it take?',
       options: [
         'Export the tables to CSV first',
         'A special Spark–SQL connector',
@@ -129,7 +132,7 @@ export const onelake: Chapter = {
       id: 'onelake-iceberg',
       difficulties: ['expert'],
       prompt:
-        'An Iceberg table lands in OneLake. How do Fabric engines read it?',
+        'An Iceberg table drifts ashore and the slime cackles that Fabric can’t read it. How do Fabric engines read it?',
       options: [
         'They can’t — convert it to Delta manually',
         'Metadata virtualization exposes it as a Delta table automatically',
@@ -146,7 +149,7 @@ export const onelake: Chapter = {
       id: 'onelake-transform-sync',
       difficulties: ['expert'],
       prompt:
-        'How often does a shortcut file transformation check its source for changes?',
+        'The slime keeps dumping new files behind a shortcut transformation. How often does Fabric check that shortcut for changes?',
       options: [
         'Every two minutes',
         'Once per hour',
@@ -165,7 +168,7 @@ export const onelake: Chapter = {
       art: 'onelake',
       lines: [
         'One lake, one copy, many engines. That is already less chaos.',
-        'Next up: actually getting our data in there.',
+        'Next, find Jonas at the Data Factory Foundry, north of the hub — he knows how to get our data in.',
       ],
     },
   ],

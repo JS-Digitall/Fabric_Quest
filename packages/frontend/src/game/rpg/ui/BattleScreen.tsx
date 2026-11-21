@@ -231,7 +231,7 @@ export function BattleScreen({
               </Button>
             )}
           </div>
-          <h2 className="mt-200 font-heading text-hero-700 font-bold leading-hero-700">
+          <h2 className="mt-200 font-heading text-600 font-bold leading-600">
             {q.prompt}
           </h2>
 

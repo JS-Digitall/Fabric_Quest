@@ -23,7 +23,8 @@ export const semantic: Chapter = {
       kind: 'arrange',
       id: 'semantic-layers',
       difficulties: ['beginner'],
-      prompt: 'Order the layers from raw data to what leadership sees.',
+      prompt:
+        'The Measure Mimic King topples the Spire’s floors! Stack them back from raw data at the bottom to what Aurora’s leadership sees at the top.',
       items: [
         'Delta tables in a lakehouse',
         'Semantic model',
@@ -38,7 +39,7 @@ export const semantic: Chapter = {
       id: 'semantic-import',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'Which storage mode copies data into the model at refresh time — fastest queries, but changes appear only after the next refresh?',
+        'The Measure Mimic copies everything into its memory at night, then answers lightning-fast — but never sees changes until the next refresh. Which storage mode is it imitating?',
       options: ['Import', 'DirectQuery', 'Direct Lake', 'Dual'],
       answer: 0,
       hint: 'The data is copied into memory.',
@@ -51,7 +52,7 @@ export const semantic: Chapter = {
       id: 'semantic-dq',
       difficulties: ['beginner', 'practitioner'],
       prompt:
-        'Which mode sends every query to the source at runtime — always fresh, sometimes slower?',
+        'Now the mimic runs to the source system for every single question — always fresh, sometimes slow. Which storage mode is that?',
       options: ['Import', 'DirectQuery', 'Direct Lake', 'Composite'],
       answer: 1,
       explanation:
@@ -63,7 +64,7 @@ export const semantic: Chapter = {
       id: 'semantic-dl',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'Which mode reads Delta tables in OneLake directly — Import-like speed without duplicating data?',
+        'Priya wants Import-like speed on Delta tables in OneLake without duplicating data. Which storage mode does she pick?',
       options: ['DirectQuery', 'Import', 'Direct Lake', 'Live connection'],
       answer: 2,
       hint: 'Its name says where it reads from.',
@@ -75,7 +76,8 @@ export const semantic: Chapter = {
       kind: 'match',
       id: 'semantic-modes',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'Match the term to its meaning.',
+      prompt:
+        'The Mimic King jumbles the Spire’s storage-mode plaques. Match each term to its meaning.',
       pairs: [
         ['Import', 'Copies data into the model at refresh'],
         ['DirectQuery', 'Translates queries to the source on every request'],
@@ -93,7 +95,8 @@ export const semantic: Chapter = {
       kind: 'choice',
       id: 'semantic-fallback',
       difficulties: ['expert'],
-      prompt: 'Which Direct Lake flavour can fall back to DirectQuery?',
+      prompt:
+        'The mimic threatens to drag Priya’s Direct Lake model back to DirectQuery. Which Direct Lake flavour can fall back to DirectQuery?',
       options: [
         'Direct Lake on OneLake',
         'Direct Lake on SQL analytics endpoints',
@@ -110,7 +113,7 @@ export const semantic: Chapter = {
       id: 'semantic-dashboard',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
-        'Our Direct Lake on SQL model is fast — except the Forecast page. Its table is built on a SQL view. What is going on?',
+        'The Mimic King slows Aurora’s Direct Lake on SQL report — but only on the Forecast page, whose table is built on a SQL view. What is going on?',
       chart: {
         title: 'Average visual load time per report page (seconds)',
         x: 'Page',
@@ -140,7 +143,7 @@ export const semantic: Chapter = {
       speaker: 'Priya, BI Lead',
       art: 'semantic-model',
       lines: [
-        'One model, one revenue number. Now we need to make sure the right people see it — and only them.',
+        'One model, one revenue number. Elif at the Governance Citadel in the south-west makes sure the right people see it — and only them.',
       ],
     },
   ],
