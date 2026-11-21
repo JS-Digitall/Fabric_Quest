@@ -1,5 +1,5 @@
 import type { OpaqueSession } from '@microsoft/rayfin-auth';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Root } from './Root';
@@ -63,11 +63,9 @@ describe('protected app content with standalone sign-in', () => {
     const auth = service();
     auth.resolveSession = vi.fn(async () => authenticated);
     render(<Root rayfinAuthService={auth} />);
-    expect(
-      await screen.findByRole('heading', {
-        name: 'Fabric Quest',
-      })
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'Fabric Quest' })).toBeVisible()
+    );
     expect(auth.signIn).not.toHaveBeenCalled();
   });
 
@@ -100,11 +98,9 @@ describe('protected app content with standalone sign-in', () => {
     ).toBeNull();
     await act(async () => fireEvent.click(button));
     expect(auth.signIn).toHaveBeenCalledTimes(1);
-    expect(
-      await screen.findByRole('heading', {
-        name: 'Fabric Quest',
-      })
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'Fabric Quest' })).toBeVisible()
+    );
   });
 
   it('keeps content protected after interactive sign-in fails', async () => {
@@ -135,11 +131,9 @@ describe('protected app content with standalone sign-in', () => {
       return unsubscribe;
     });
     render(<Root rayfinAuthService={auth} />);
-    expect(
-      await screen.findByRole('heading', {
-        name: 'Fabric Quest',
-      })
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'Fabric Quest' })).toBeVisible()
+    );
     await act(async () => notify?.(null));
     expect(
       await screen.findByRole('button', { name: 'Sign in with Microsoft' })

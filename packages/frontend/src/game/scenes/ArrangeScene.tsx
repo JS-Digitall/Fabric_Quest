@@ -1,0 +1,78 @@
+import { Reorder } from 'framer-motion';
+import { GripVertical } from 'lucide-react';
+import { useState, type KeyboardEvent } from 'react';
+
+import { cn } from '@/lib/utils';
+
+import type { Answer, ArrangeScene as Scene } from '../types';
+import { Button } from '../ui';
+import { shuffled } from './shuffle';
+
+export function ArrangeScene({
+  scene,
+  locked,
+  onSubmit,
+}: {
+  scene: Scene;
+  locked: boolean;
+  onSubmit: (a: Answer) => void;
+}) {
+  const [order, setOrder] = useState(() => shuffled(scene.items));
+
+  function move(from: number, to: number, el: HTMLElement) {
+    if (to < 0 || to >= order.length) return;
+    const next = [...order];
+    next.splice(to, 0, next.splice(from, 1)[0]);
+    setOrder(next);
+    // Keep focus on the moved item.
+    requestAnimationFrame(() =>
+      (el.parentElement?.children[to] as HTMLElement | undefined)?.focus()
+    );
+  }
+
+  function onKey(e: KeyboardEvent<HTMLLIElement>, i: number) {
+    if (locked) return;
+    if (e.key === 'ArrowUp') move(i, i - 1, e.currentTarget);
+    if (e.key === 'ArrowDown') move(i, i + 1, e.currentTarget);
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') e.preventDefault();
+  }
+
+  return (
+    <div className="mt-500">
+      <p className="mb-300 text-300 text-muted-foreground">
+        Drag the cards, or focus one and use ↑ / ↓.
+      </p>
+      <Reorder.Group axis="y" values={order} onReorder={locked ? () => {} : setOrder} className="grid gap-300">
+        {order.map((item, i) => {
+          const right = locked && scene.items[i] === item;
+          return (
+            <Reorder.Item
+              key={item}
+              value={item}
+              data-value={item}
+              dragListener={!locked}
+              tabIndex={0}
+              aria-label={`${i + 1}. ${item}`}
+              onKeyDown={(e: KeyboardEvent<HTMLLIElement>) => onKey(e, i)}
+              className={cn(
+                'flex cursor-grab items-center gap-300 rounded-2xl border-2 border-border bg-card px-400 py-400 text-400 font-medium shadow-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 active:cursor-grabbing',
+                locked && (right ? 'border-success bg-success/10' : 'border-destructive bg-destructive/10')
+              )}
+            >
+              <span aria-hidden className="grid size-800 shrink-0 place-items-center rounded-xl bg-primary font-heading text-300 font-bold text-primary-foreground">
+                {i + 1}
+              </span>
+              <span className="flex-1">{item}</span>
+              <GripVertical className="size-icon-300 text-muted-foreground" aria-hidden />
+            </Reorder.Item>
+          );
+        })}
+      </Reorder.Group>
+      {!locked && (
+        <Button className="mt-500" onClick={() => onSubmit({ kind: 'order', items: order })}>
+          Lock in order
+        </Button>
+      )}
+    </div>
+  );
+}
