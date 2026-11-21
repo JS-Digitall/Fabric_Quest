@@ -1,5 +1,11 @@
 import type { OpaqueSession } from '@microsoft/rayfin-auth';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Root } from './Root';
@@ -42,9 +48,7 @@ describe('protected app content with standalone sign-in', () => {
       () => new Promise<OpaqueSession | null>(() => {})
     );
     render(<Root rayfinAuthService={auth} />);
-    expect(
-      screen.queryByRole('heading', { name: 'Fabric Quest' })
-    ).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Fabric Quest' })).toBeNull();
     expect(screen.getByText('Connecting to Fabric…')).toBeVisible();
   });
 
@@ -53,9 +57,7 @@ describe('protected app content with standalone sign-in', () => {
     expect(
       await screen.findByRole('button', { name: 'Sign in with Microsoft' })
     ).toBeVisible();
-    expect(
-      screen.queryByRole('heading', { name: 'Fabric Quest' })
-    ).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Fabric Quest' })).toBeNull();
     expect(screen.queryByText(/outside Fabric/)).toBeNull();
   });
 
@@ -64,7 +66,9 @@ describe('protected app content with standalone sign-in', () => {
     auth.resolveSession = vi.fn(async () => authenticated);
     render(<Root rayfinAuthService={auth} />);
     await waitFor(() =>
-      expect(screen.getByRole('heading', { name: 'Fabric Quest' })).toBeVisible()
+      expect(
+        screen.getByRole('heading', { name: 'Fabric Quest' })
+      ).toBeVisible()
     );
     expect(auth.signIn).not.toHaveBeenCalled();
   });
@@ -79,9 +83,7 @@ describe('protected app content with standalone sign-in', () => {
     expect(
       await screen.findByRole('button', { name: 'Sign in with Microsoft' })
     ).toBeVisible();
-    expect(
-      screen.queryByRole('heading', { name: 'Fabric Quest' })
-    ).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Fabric Quest' })).toBeNull();
   });
 
   it('recovers from failed local automatic sign-in through a user gesture', async () => {
@@ -93,13 +95,13 @@ describe('protected app content with standalone sign-in', () => {
     const button = await screen.findByRole('button', {
       name: 'Try Sign in with Microsoft',
     });
-    expect(
-      screen.queryByRole('heading', { name: 'Fabric Quest' })
-    ).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Fabric Quest' })).toBeNull();
     await act(async () => fireEvent.click(button));
     expect(auth.signIn).toHaveBeenCalledTimes(1);
     await waitFor(() =>
-      expect(screen.getByRole('heading', { name: 'Fabric Quest' })).toBeVisible()
+      expect(
+        screen.getByRole('heading', { name: 'Fabric Quest' })
+      ).toBeVisible()
     );
   });
 
@@ -116,9 +118,7 @@ describe('protected app content with standalone sign-in', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Sign-in was cancelled.'
     );
-    expect(
-      screen.queryByRole('heading', { name: 'Fabric Quest' })
-    ).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Fabric Quest' })).toBeNull();
   });
 
   it('removes protected content when the authenticated session ends', async () => {
@@ -132,15 +132,15 @@ describe('protected app content with standalone sign-in', () => {
     });
     render(<Root rayfinAuthService={auth} />);
     await waitFor(() =>
-      expect(screen.getByRole('heading', { name: 'Fabric Quest' })).toBeVisible()
+      expect(
+        screen.getByRole('heading', { name: 'Fabric Quest' })
+      ).toBeVisible()
     );
     await act(async () => notify?.(null));
     expect(
       await screen.findByRole('button', { name: 'Sign in with Microsoft' })
     ).toBeVisible();
-    expect(
-      screen.queryByRole('heading', { name: 'Fabric Quest' })
-    ).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Fabric Quest' })).toBeNull();
     expect(unsubscribe).toHaveBeenCalled();
   });
 
@@ -150,9 +150,7 @@ describe('protected app content with standalone sign-in', () => {
     { kind: 'config-error', message: 'Runtime configuration is unavailable.' },
   ])('fails closed for $kind configuration', async (config) => {
     await act(async () => render(<Root rayfinAuthService={service(config)} />));
-    expect(
-      screen.queryByRole('heading', { name: 'Fabric Quest' })
-    ).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Fabric Quest' })).toBeNull();
     expect(
       screen.queryByRole('button', { name: 'Sign in with Microsoft' })
     ).toBeNull();

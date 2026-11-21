@@ -42,7 +42,12 @@ export function ArrangeScene({
       <p className="mb-300 text-300 text-muted-foreground">
         Drag the cards, or focus one and use ↑ / ↓.
       </p>
-      <Reorder.Group axis="y" values={order} onReorder={locked ? () => {} : setOrder} className="grid gap-300">
+      <Reorder.Group
+        axis="y"
+        values={order}
+        onReorder={locked ? () => {} : setOrder}
+        className="grid gap-300"
+      >
         {order.map((item, i) => {
           const right = locked && scene.items[i] === item;
           return (
@@ -56,20 +61,32 @@ export function ArrangeScene({
               onKeyDown={(e: KeyboardEvent<HTMLLIElement>) => onKey(e, i)}
               className={cn(
                 'flex cursor-grab items-center gap-300 rounded-2xl border-2 border-border bg-card px-400 py-400 text-400 font-medium shadow-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 active:cursor-grabbing',
-                locked && (right ? 'border-success bg-success/10' : 'border-destructive bg-destructive/10')
+                locked &&
+                  (right
+                    ? 'border-success bg-success/10'
+                    : 'border-destructive bg-destructive/10')
               )}
             >
-              <span aria-hidden className="grid size-800 shrink-0 place-items-center rounded-xl bg-primary font-heading text-300 font-bold text-primary-foreground">
+              <span
+                aria-hidden
+                className="grid size-800 shrink-0 place-items-center rounded-xl bg-primary font-heading text-300 font-bold text-primary-foreground"
+              >
                 {i + 1}
               </span>
               <span className="flex-1">{item}</span>
-              <GripVertical className="size-icon-300 text-muted-foreground" aria-hidden />
+              <GripVertical
+                className="icon-size-300 text-muted-foreground"
+                aria-hidden
+              />
             </Reorder.Item>
           );
         })}
       </Reorder.Group>
       {!locked && (
-        <Button className="mt-500" onClick={() => onSubmit({ kind: 'order', items: order })}>
+        <Button
+          className="mt-500"
+          onClick={() => onSubmit({ kind: 'order', items: order })}
+        >
           Lock in order
         </Button>
       )}

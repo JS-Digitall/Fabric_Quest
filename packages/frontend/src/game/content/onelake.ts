@@ -40,8 +40,14 @@ export const onelake: Chapter = {
       kind: 'choice',
       id: 'onelake-format',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'In which open table format do Fabric engines store tables in OneLake?',
-      options: ['CSV', 'Delta Parquet', 'Excel workbooks', 'A proprietary binary format'],
+      prompt:
+        'In which open table format do Fabric engines store tables in OneLake?',
+      options: [
+        'CSV',
+        'Delta Parquet',
+        'Excel workbooks',
+        'A proprietary binary format',
+      ],
       answer: 1,
       hint: 'It is open and columnar.',
       explanation:
@@ -54,7 +60,12 @@ export const onelake: Chapter = {
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
         'The Finance team owns a table in their workspace. You need it in yours — without duplicating the data. What do you create?',
-      options: ['A nightly copy pipeline', 'A shortcut', 'An export to CSV', 'A second OneLake'],
+      options: [
+        'A nightly copy pipeline',
+        'A shortcut',
+        'An export to CSV',
+        'A second OneLake',
+      ],
       answer: 1,
       hint: 'It points instead of copies.',
       explanation:
@@ -79,9 +90,18 @@ export const onelake: Chapter = {
       prompt: 'Match each OneLake feature to what it does.',
       pairs: [
         ['Shortcut', 'References data in place without copying it'],
-        ['Database mirroring', 'Continuously replicates an operational database as Delta tables'],
-        ['Metadata mirroring', 'Syncs an external catalog and reads its data through shortcuts'],
-        ['Shortcut transformation', 'Turns files behind a shortcut into a synced Delta table'],
+        [
+          'Database mirroring',
+          'Continuously replicates an operational database as Delta tables',
+        ],
+        [
+          'Metadata mirroring',
+          'Syncs an external catalog and reads its data through shortcuts',
+        ],
+        [
+          'Shortcut transformation',
+          'Turns files behind a shortcut into a synced Delta table',
+        ],
       ],
       explanation:
         'Shortcuts virtualize, database mirroring replicates, metadata mirroring syncs catalogs and uses shortcuts, and shortcut transformations convert files into Delta tables.',
@@ -108,7 +128,8 @@ export const onelake: Chapter = {
       kind: 'choice',
       id: 'onelake-iceberg',
       difficulties: ['expert'],
-      prompt: 'An Iceberg table lands in OneLake. How do Fabric engines read it?',
+      prompt:
+        'An Iceberg table lands in OneLake. How do Fabric engines read it?',
       options: [
         'They can’t — convert it to Delta manually',
         'Metadata virtualization exposes it as a Delta table automatically',
@@ -124,8 +145,14 @@ export const onelake: Chapter = {
       kind: 'choice',
       id: 'onelake-transform-sync',
       difficulties: ['expert'],
-      prompt: 'How often does a shortcut file transformation check its source for changes?',
-      options: ['Every two minutes', 'Once per hour', 'Only when you refresh it', 'Once per day'],
+      prompt:
+        'How often does a shortcut file transformation check its source for changes?',
+      options: [
+        'Every two minutes',
+        'Once per hour',
+        'Only when you refresh it',
+        'Once per day',
+      ],
       answer: 0,
       explanation:
         'Fabric polls the shortcut every two minutes and synchronizes changes into the managed Delta table, using Fabric Spark compute.',

@@ -36,7 +36,12 @@ export function gameReducer(game: Game, action: Action): Game {
       return { ...game, screen: { name: action.screen } };
     case 'difficulty':
       // A new difficulty starts a fresh campaign.
-      return { ...game, difficulty: action.difficulty, results: {}, screen: { name: 'map' } };
+      return {
+        ...game,
+        difficulty: action.difficulty,
+        results: {},
+        screen: { name: 'map' },
+      };
     case 'play':
       // `run` remounts the player so a replay starts clean.
       return {
@@ -47,8 +52,9 @@ export function gameReducer(game: Game, action: Action): Game {
     case 'finish':
       return {
         ...game,
-        results: recordResult(game, action.chapter, action.score, action.max).results,
-        screen: { name: "result", chapter: action.chapter },
+        results: recordResult(game, action.chapter, action.score, action.max)
+          .results,
+        screen: { name: 'result', chapter: action.chapter },
       };
   }
 }

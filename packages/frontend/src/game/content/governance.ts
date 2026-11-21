@@ -1,10 +1,13 @@
 import type { Chapter } from '../types';
 
-const PERMISSIONS = 'https://learn.microsoft.com/fabric/security/permission-model';
-const ENDORSE = 'https://learn.microsoft.com/fabric/governance/endorsement-overview';
+const PERMISSIONS =
+  'https://learn.microsoft.com/fabric/security/permission-model';
+const ENDORSE =
+  'https://learn.microsoft.com/fabric/governance/endorsement-overview';
 const LABELS =
   'https://learn.microsoft.com/fabric/enterprise/powerbi/service-security-enable-data-sensitivity-labels';
-const CATALOG = 'https://learn.microsoft.com/fabric/governance/onelake-catalog-explore';
+const CATALOG =
+  'https://learn.microsoft.com/fabric/governance/onelake-catalog-explore';
 
 export const governance: Chapter = {
   id: 'governance',
@@ -49,9 +52,15 @@ export const governance: Chapter = {
       id: 'governance-delete',
       difficulties: ['beginner', 'practitioner'],
       prompt: 'Which workspace role can delete the workspace?',
-      options: ['Admin only', 'Admin and Member', 'Anyone except Viewer', 'Nobody — only Fabric admins'],
+      options: [
+        'Admin only',
+        'Admin and Member',
+        'Anyone except Viewer',
+        'Nobody — only Fabric admins',
+      ],
       answer: 0,
-      explanation: 'Deleting the workspace and adding admins are capabilities of the Admin role only.',
+      explanation:
+        'Deleting the workspace and adding admins are capabilities of the Admin role only.',
       source: PERMISSIONS,
     },
     {
@@ -61,8 +70,14 @@ export const governance: Chapter = {
       prompt: 'Match each endorsement badge to its meaning.',
       pairs: [
         ['Promoted', 'The creators think it is ready for sharing and reuse'],
-        ['Certified', 'An authorized reviewer confirmed it meets quality standards'],
-        ['Master data', 'Core, single-source-of-truth data such as customer lists'],
+        [
+          'Certified',
+          'An authorized reviewer confirmed it meets quality standards',
+        ],
+        [
+          'Master data',
+          'Core, single-source-of-truth data such as customer lists',
+        ],
       ],
       explanation:
         'Anyone with write permission can promote; only reviewers named by a Fabric admin can certify or apply the Master data badge.',
@@ -73,10 +88,16 @@ export const governance: Chapter = {
       id: 'governance-dashboards',
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt: 'Which item type can NOT be promoted or certified?',
-      options: ['Lakehouses', 'Semantic models', 'Power BI dashboards', 'Notebooks'],
+      options: [
+        'Lakehouses',
+        'Semantic models',
+        'Power BI dashboards',
+        'Notebooks',
+      ],
       answer: 2,
       hint: 'It is a Power BI classic.',
-      explanation: 'All Fabric and Power BI items except Power BI dashboards can be promoted or certified.',
+      explanation:
+        'All Fabric and Power BI items except Power BI dashboards can be promoted or certified.',
       source: ENDORSE,
     },
     {
@@ -116,7 +137,12 @@ export const governance: Chapter = {
       id: 'governance-catalog',
       difficulties: ['beginner'],
       prompt: 'Where do you find endorsed items across all your workspaces?',
-      options: ['The OneLake catalog', 'Windows Explorer', 'The capacity settings', 'Your inbox'],
+      options: [
+        'The OneLake catalog',
+        'Windows Explorer',
+        'The capacity settings',
+        'Your inbox',
+      ],
       answer: 0,
       explanation:
         'The OneLake catalog has an Endorsed items filter that lists certified items first, then promoted items, across workspaces.',
@@ -127,7 +153,9 @@ export const governance: Chapter = {
       id: 'governance-outro',
       speaker: 'Elif, Security Officer',
       art: 'governance-shield',
-      lines: ['Roles set, trusted data badged, labels on. I might sleep tonight.'],
+      lines: [
+        'Roles set, trusted data badged, labels on. I might sleep tonight.',
+      ],
     },
   ],
 };

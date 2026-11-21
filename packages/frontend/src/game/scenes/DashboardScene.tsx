@@ -1,4 +1,8 @@
-import { useCssTheme, VegaVisual, type VisualizationSpec } from '@microsoft/fabric-visuals';
+import {
+  useCssTheme,
+  VegaVisual,
+  type VisualizationSpec,
+} from '@microsoft/fabric-visuals';
 import type { DataTable } from '@microsoft/fabric-visuals-core';
 
 import type { ChartData } from '../types';

@@ -5,6 +5,7 @@ export function shuffled<T>(items: T[]): T[] {
     const j = Math.floor(Math.random() * (i + 1));
     [out[i], out[j]] = [out[j], out[i]];
   }
-  if (out.length > 1 && out.every((v, i) => v === items[i])) out.push(out.shift()!);
+  if (out.length > 1 && out.every((v, i) => v === items[i]))
+    out.push(out.shift()!);
   return out;
 }

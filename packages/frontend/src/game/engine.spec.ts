@@ -60,9 +60,7 @@ describe('scenesFor', () => {
   });
 
   it('still returns dialogue when no question fits', () => {
-    expect(scenesFor(chapter, 'practitioner').map((s) => s.id)).toEqual([
-      'd1',
-    ]);
+    expect(scenesFor(chapter, 'practitioner').map((s) => s.id)).toEqual(['d1']);
   });
 });
 
@@ -78,7 +76,11 @@ describe('scoreAnswer', () => {
 
   it('gives partial credit per correct position in arrange', () => {
     expect(
-      scoreAnswer(arrange, { kind: 'order', items: ['1', '2', '4', '3'] }, false)
+      scoreAnswer(
+        arrange,
+        { kind: 'order', items: ['1', '2', '4', '3'] },
+        false
+      )
     ).toBe(50);
   });
 

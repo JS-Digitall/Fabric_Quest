@@ -41,8 +41,17 @@ export function OptionList({
                 locked && !correct && !wrong && 'opacity-60'
               )}
             >
-              <span aria-hidden className="grid size-800 shrink-0 place-items-center rounded-xl bg-muted font-heading text-300 font-bold">
-                {correct ? <Check className="size-icon-300" aria-hidden /> : wrong ? <X className="size-icon-300" aria-hidden /> : String.fromCharCode(65 + i)}
+              <span
+                aria-hidden
+                className="grid size-800 shrink-0 place-items-center rounded-xl bg-muted font-heading text-300 font-bold"
+              >
+                {correct ? (
+                  <Check className="icon-size-300" aria-hidden />
+                ) : wrong ? (
+                  <X className="icon-size-300" aria-hidden />
+                ) : (
+                  String.fromCharCode(65 + i)
+                )}
               </span>
               {option}
             </button>

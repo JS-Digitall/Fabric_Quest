@@ -2,7 +2,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { chapters } from './content';
 import { ChapterPlayer } from './screens/ChapterPlayer';
-import { ChapterMap, ChapterResult, DifficultyScreen, SummaryScreen, TitleScreen } from './screens/menus';
+import {
+  ChapterMap,
+  ChapterResult,
+  DifficultyScreen,
+  SummaryScreen,
+  TitleScreen,
+} from './screens/menus';
 import type { ChapterId } from './types';
 import { useGame } from './useGame';
 
@@ -11,13 +17,19 @@ const byId = (id: ChapterId) => chapters.find((c) => c.id === id)!;
 export function GameApp() {
   const [game, dispatch] = useGame();
   const { screen } = game;
-  const go = (name: 'title' | 'difficulty' | 'map' | 'summary') => dispatch({ type: 'go', screen: name });
+  const go = (name: 'title' | 'difficulty' | 'map' | 'summary') =>
+    dispatch({ type: 'go', screen: name });
   const play = (chapter: ChapterId) => dispatch({ type: 'play', chapter });
 
   let view;
-  if (screen.name === 'title') view = <TitleScreen onStart={() => go('difficulty')} />;
+  if (screen.name === 'title')
+    view = <TitleScreen onStart={() => go('difficulty')} />;
   else if (screen.name === 'difficulty' || !game.difficulty)
-    view = <DifficultyScreen onPick={(difficulty) => dispatch({ type: 'difficulty', difficulty })} />;
+    view = (
+      <DifficultyScreen
+        onPick={(difficulty) => dispatch({ type: 'difficulty', difficulty })}
+      />
+    );
   else if (screen.name === 'map')
     view = (
       <ChapterMap
@@ -35,7 +47,9 @@ export function GameApp() {
         chapter={byId(screen.chapter)}
         difficulty={game.difficulty}
         onExit={() => go('map')}
-        onFinish={(score, max) => dispatch({ type: 'finish', chapter: screen.chapter, score, max })}
+        onFinish={(score, max) =>
+          dispatch({ type: 'finish', chapter: screen.chapter, score, max })
+        }
       />
     );
   else if (screen.name === 'result') {
@@ -50,7 +64,10 @@ export function GameApp() {
         onMap={() => go('map')}
       />
     );
-  } else view = <SummaryScreen chapters={chapters} game={game} onMap={() => go('map')} />;
+  } else
+    view = (
+      <SummaryScreen chapters={chapters} game={game} onMap={() => go('map')} />
+    );
 
   return (
     <main className="game-backdrop min-h-screen px-500 py-600 text-foreground md:px-800">

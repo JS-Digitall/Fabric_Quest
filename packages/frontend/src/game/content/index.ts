@@ -6,4 +6,11 @@ import { ingest } from './ingest';
 import { onelake } from './onelake';
 import { semantic } from './semantic';
 
-export const chapters: Chapter[] = [onelake, ingest, semantic, governance, fabriciq, apps];
+export const chapters: Chapter[] = [
+  onelake,
+  ingest,
+  semantic,
+  governance,
+  fabriciq,
+  apps,
+];

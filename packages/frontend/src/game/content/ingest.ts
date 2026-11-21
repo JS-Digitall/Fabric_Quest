@@ -26,7 +26,12 @@ export const ingest: Chapter = {
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
         'You are ingesting raw (bronze) data and will soon need scheduling, schema mapping and incremental loads. Where do you start?',
-      options: ['Mirroring', 'Copy job', 'Eventstreams', 'A notebook that downloads files'],
+      options: [
+        'Mirroring',
+        'Copy job',
+        'Eventstreams',
+        'A notebook that downloads files',
+      ],
       answer: 1,
       hint: 'It supports bulk, incremental and CDC — without building a pipeline.',
       explanation:
@@ -39,7 +44,12 @@ export const ingest: Chapter = {
       difficulties: ['beginner', 'practitioner', 'expert'],
       prompt:
         'Another team already processes curated (gold) data elsewhere. You just need it in Fabric for reporting, simply and cheaply.',
-      options: ['Mirroring', 'Copy activity in a pipeline', 'Dataflow Gen2', 'Eventstreams'],
+      options: [
+        'Mirroring',
+        'Copy activity in a pipeline',
+        'Dataflow Gen2',
+        'Eventstreams',
+      ],
       answer: 0,
       hint: 'It is free and needs minimal setup.',
       explanation:
@@ -50,7 +60,8 @@ export const ingest: Chapter = {
       kind: 'choice',
       id: 'ingest-stream',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'Clickstream events need low-latency, event-driven ingestion. Which tool?',
+      prompt:
+        'Clickstream events need low-latency, event-driven ingestion. Which tool?',
       options: ['Copy job', 'Mirroring', 'Eventstreams', 'Dataflow Gen2'],
       answer: 2,
       explanation:
@@ -63,7 +74,12 @@ export const ingest: Chapter = {
       difficulties: ['practitioner', 'expert'],
       prompt:
         'You need parameterized, metadata-driven ingestion of 200 tables plus complex orchestration. What fits best?',
-      options: ['Mirroring', 'Copy activity in a pipeline', 'A shortcut', 'Eventstreams'],
+      options: [
+        'Mirroring',
+        'Copy activity in a pipeline',
+        'A shortcut',
+        'Eventstreams',
+      ],
       answer: 1,
       explanation:
         'For complex orchestration, pipelines give the flexibility you need, and copy activities offer data object parameterization and metadata-driven ingestion.',
@@ -73,7 +89,8 @@ export const ingest: Chapter = {
       kind: 'choice',
       id: 'ingest-dataflow',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'Which item gives you a low-code interface with 300+ transformations?',
+      prompt:
+        'Which item gives you a low-code interface with 300+ transformations?',
       options: ['Dataflow Gen2', 'Copy job', 'Mirroring', 'A shortcut'],
       answer: 0,
       explanation:
@@ -118,8 +135,14 @@ export const ingest: Chapter = {
       prompt: 'Match each data movement option to its sweet spot.',
       pairs: [
         ['Mirroring', 'Turn-key, near real-time replication'],
-        ['Copy job', 'Bulk, incremental and CDC copy without building a pipeline'],
-        ['Copy activity', 'Pipeline-based ingestion where you track incremental state'],
+        [
+          'Copy job',
+          'Bulk, incremental and CDC copy without building a pipeline',
+        ],
+        [
+          'Copy activity',
+          'Pipeline-based ingestion where you track incremental state',
+        ],
         ['Eventstreams', 'Real-time, event-driven processing'],
       ],
       explanation:
@@ -131,7 +154,9 @@ export const ingest: Chapter = {
       id: 'ingest-outro',
       speaker: 'Jonas, Data Engineer',
       art: 'pipeline',
-      lines: ['Bronze is filling, gold is shining. Time to make it useful for the business.'],
+      lines: [
+        'Bronze is filling, gold is shining. Time to make it useful for the business.',
+      ],
     },
   ],
 };

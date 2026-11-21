@@ -14,7 +14,10 @@ import { vi } from 'vitest';
 // stay mounted forever. Render presence children directly in tests.
 vi.mock('framer-motion', async (importOriginal) => {
   const actual = await importOriginal<typeof import('framer-motion')>();
-  return { ...actual, AnimatePresence: ({ children }: { children: ReactNode }) => children };
+  return {
+    ...actual,
+    AnimatePresence: ({ children }: { children: ReactNode }) => children,
+  };
 });
 
 import { MotionGlobalConfig } from 'framer-motion';

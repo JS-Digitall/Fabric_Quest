@@ -2,7 +2,8 @@ import type { Chapter } from '../types';
 
 const IQ = 'https://learn.microsoft.com/fabric/iq/overview';
 const ONTOLOGY = 'https://learn.microsoft.com/fabric/iq/ontology/overview';
-const TERMS = 'https://learn.microsoft.com/fabric/fundamentals/fabric-terminology';
+const TERMS =
+  'https://learn.microsoft.com/fabric/fundamentals/fabric-terminology';
 
 export const fabriciq: Chapter = {
   id: 'fabriciq',
@@ -56,7 +57,8 @@ export const fabriciq: Chapter = {
       kind: 'choice',
       id: 'fabriciq-bootstrap',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'We already have trusted Power BI semantic models. What is the fastest start?',
+      prompt:
+        'We already have trusted Power BI semantic models. What is the fastest start?',
       options: [
         'Re-type every definition by hand',
         'Generate the ontology from the semantic models',
@@ -86,7 +88,8 @@ export const fabriciq: Chapter = {
       kind: 'match',
       id: 'fabriciq-family',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'Microsoft IQ has several members. Match each to the context it provides.',
+      prompt:
+        'Microsoft IQ has several members. Match each to the context it provides.',
       pairs: [
         ['Fabric IQ', 'Business entities and data'],
         ['Work IQ', 'How employees work'],
@@ -102,7 +105,12 @@ export const fabriciq: Chapter = {
       id: 'fabriciq-rules',
       difficulties: ['practitioner', 'expert'],
       prompt: 'How are business rules captured in an ontology?',
-      options: ['In natural language, linked to entities', 'As Python scripts', 'As Excel macros', 'They can’t be'],
+      options: [
+        'In natural language, linked to entities',
+        'As Python scripts',
+        'As Excel macros',
+        'They can’t be',
+      ],
       answer: 0,
       explanation:
         'Rules capture business logic in natural language and link it to entities, properties and relationships, so many consumers reuse the same rule.',
@@ -140,9 +148,15 @@ export const fabriciq: Chapter = {
       id: 'fabriciq-preview',
       difficulties: ['beginner'],
       prompt: 'What is the release status of the Fabric IQ workload?',
-      options: ['Preview', 'Retired', 'On-premises only', 'Only in Power BI Desktop'],
+      options: [
+        'Preview',
+        'Retired',
+        'On-premises only',
+        'Only in Power BI Desktop',
+      ],
       answer: 0,
-      explanation: 'IQ is a Fabric workload in preview that groups items for unifying business semantics.',
+      explanation:
+        'IQ is a Fabric workload in preview that groups items for unifying business semantics.',
       source: TERMS,
     },
     {
@@ -150,7 +164,9 @@ export const fabriciq: Chapter = {
       id: 'fabriciq-outro',
       speaker: 'Sam, AI Lead',
       art: 'fabric-iq',
-      lines: ['Now the agents speak Aurora. Last challenge: ship an app for the whole company.'],
+      lines: [
+        'Now the agents speak Aurora. Last challenge: ship an app for the whole company.',
+      ],
     },
   ],
 };

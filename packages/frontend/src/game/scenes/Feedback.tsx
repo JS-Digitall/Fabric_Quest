@@ -36,9 +36,9 @@ export function Feedback({
     >
       <div className="flex items-center gap-300">
         {good || partial ? (
-          <CheckCircle2 className="size-icon-500 text-success" aria-hidden />
+          <CheckCircle2 className="icon-size-500 text-success" aria-hidden />
         ) : (
-          <XCircle className="size-icon-500 text-destructive" aria-hidden />
+          <XCircle className="icon-size-500 text-destructive" aria-hidden />
         )}
         <p className="font-heading text-500 font-bold">
           {good ? 'Spot on!' : partial ? 'Partly right' : 'Not quite'}
@@ -47,7 +47,9 @@ export function Feedback({
           +{points}
         </span>
       </div>
-      <p className="mt-300 text-400 leading-400 text-foreground">{explanation}</p>
+      <p className="mt-300 text-400 leading-400 text-foreground">
+        {explanation}
+      </p>
       <div className="mt-500 flex flex-wrap items-center gap-400">
         {href ? (
           <a
@@ -56,7 +58,8 @@ export function Feedback({
             rel="noreferrer"
             className="inline-flex items-center gap-100 text-300 font-semibold text-primary underline-offset-4 hover:underline"
           >
-            Learn more on Microsoft Learn <ExternalLink className="size-icon-200" aria-hidden />
+            Learn more on Microsoft Learn{' '}
+            <ExternalLink className="icon-size-200" aria-hidden />
           </a>
         ) : (
           <span className="text-300 text-muted-foreground">
@@ -64,7 +67,7 @@ export function Feedback({
           </span>
         )}
         <Button ref={next} className="ml-auto" onClick={onContinue}>
-          Continue <ArrowRight className="size-icon-300" aria-hidden />
+          Continue <ArrowRight className="icon-size-300" aria-hidden />
         </Button>
       </div>
     </motion.section>

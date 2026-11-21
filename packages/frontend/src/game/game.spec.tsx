@@ -55,7 +55,9 @@ const click = (name: RegExp | string) =>
 function arrangeByKeyboard(target: string[]) {
   target.forEach((label, i) => {
     for (let guard = 0; guard < 10; guard++) {
-      const items = screen.getAllByRole('listitem').map((li) => li.dataset.value);
+      const items = screen
+        .getAllByRole('listitem')
+        .map((li) => li.dataset.value);
       const at = items.indexOf(label);
       if (at === i) break;
       const li = screen.getAllByRole('listitem')[at];
@@ -85,7 +87,14 @@ describe('game flow', () => {
 
 describe('ChapterPlayer', () => {
   function play(onFinish = vi.fn()) {
-    render(<ChapterPlayer chapter={fixture} difficulty="beginner" onFinish={onFinish} onExit={vi.fn()} />);
+    render(
+      <ChapterPlayer
+        chapter={fixture}
+        difficulty="beginner"
+        onFinish={onFinish}
+        onExit={vi.fn()}
+      />
+    );
     expect(screen.getByText('Hello there')).toBeInTheDocument();
     click(/continue/i);
     return onFinish;
@@ -95,7 +104,10 @@ describe('ChapterPlayer', () => {
     play();
     click('B');
     expect(screen.getByText('B is the right answer here.')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /learn more/i })).toHaveAttribute('href', src);
+    expect(screen.getByRole('link', { name: /learn more/i })).toHaveAttribute(
+      'href',
+      src
+    );
   });
 
   it('scores a double-clicked answer only once and finishes with keyboard-only puzzles', () => {
@@ -111,7 +123,9 @@ describe('ChapterPlayer', () => {
     click(/lock in/i);
     click(/continue/i);
 
-    matchByKeyboard(fixture.scenes[3].kind === 'match' ? fixture.scenes[3].pairs : []);
+    matchByKeyboard(
+      fixture.scenes[3].kind === 'match' ? fixture.scenes[3].pairs : []
+    );
     click(/check/i);
     click(/continue/i);
 

@@ -1,12 +1,7 @@
 export type Difficulty = 'beginner' | 'practitioner' | 'expert';
 
 export type ChapterId =
-  | 'onelake'
-  | 'ingest'
-  | 'semantic'
-  | 'governance'
-  | 'fabriciq'
-  | 'apps';
+  'onelake' | 'ingest' | 'semantic' | 'governance' | 'fabriciq' | 'apps';
 
 /** Key of the illustration registry in `art/`. */
 export type ArtId = string;
@@ -61,10 +56,7 @@ export type DashboardScene = Base & {
 };
 
 export type QuestionScene =
-  | ChoiceScene
-  | ArrangeScene
-  | MatchScene
-  | DashboardScene;
+  ChoiceScene | ArrangeScene | MatchScene | DashboardScene;
 export type Scene = DialogueScene | QuestionScene;
 
 export interface Chapter {

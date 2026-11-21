@@ -1,6 +1,7 @@
 import type { Chapter } from '../types';
 
-const DIRECT_LAKE = 'https://learn.microsoft.com/fabric/fundamentals/direct-lake-overview';
+const DIRECT_LAKE =
+  'https://learn.microsoft.com/fabric/fundamentals/direct-lake-overview';
 const STORE = 'https://learn.microsoft.com/fabric/fundamentals/store-data';
 
 export const semantic: Chapter = {
@@ -23,7 +24,11 @@ export const semantic: Chapter = {
       id: 'semantic-layers',
       difficulties: ['beginner'],
       prompt: 'Order the layers from raw data to what leadership sees.',
-      items: ['Delta tables in a lakehouse', 'Semantic model', 'Power BI report'],
+      items: [
+        'Delta tables in a lakehouse',
+        'Semantic model',
+        'Power BI report',
+      ],
       explanation:
         'Semantic models are the curated layer with measures, relationships and hierarchies on top of raw data; reports query the model.',
       source: STORE,
@@ -74,7 +79,10 @@ export const semantic: Chapter = {
       pairs: [
         ['Import', 'Copies data into the model at refresh'],
         ['DirectQuery', 'Translates queries to the source on every request'],
-        ['Direct Lake', 'Loads Delta files from OneLake without an import copy'],
+        [
+          'Direct Lake',
+          'Loads Delta files from OneLake without an import copy',
+        ],
         ['Composite model', 'One model with tables in different storage modes'],
       ],
       explanation:
@@ -131,7 +139,9 @@ export const semantic: Chapter = {
       id: 'semantic-outro',
       speaker: 'Priya, BI Lead',
       art: 'semantic-model',
-      lines: ['One model, one revenue number. Now we need to make sure the right people see it — and only them.'],
+      lines: [
+        'One model, one revenue number. Now we need to make sure the right people see it — and only them.',
+      ],
     },
   ],
 };

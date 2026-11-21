@@ -22,7 +22,8 @@ export const apps: Chapter = {
       kind: 'dashboard',
       id: 'apps-paging',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'The order list in our app shows exactly 100 rows, but the table holds 2,500. Why?',
+      prompt:
+        'The order list in our app shows exactly 100 rows, but the table holds 2,500. Why?',
       chart: {
         title: 'Rows in table vs. rows shown in the app',
         x: 'Measure',
@@ -48,7 +49,8 @@ export const apps: Chapter = {
       kind: 'choice',
       id: 'apps-kql',
       difficulties: ['beginner', 'practitioner', 'expert'],
-      prompt: 'Which data source can’t you add as a new connector in this release?',
+      prompt:
+        'Which data source can’t you add as a new connector in this release?',
       options: [
         'A Power BI semantic model',
         'An Eventhouse KQL database',
@@ -64,7 +66,8 @@ export const apps: Chapter = {
       kind: 'choice',
       id: 'apps-m2m',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'Students and courses need a many-to-many relationship. How do you model it?',
+      prompt:
+        'Students and courses need a many-to-many relationship. How do you model it?',
       options: [
         'Use @many() on both sides',
         'Many-to-many isn’t supported — add a join entity with two @one() navigations',
@@ -80,7 +83,8 @@ export const apps: Chapter = {
       kind: 'choice',
       id: 'apps-count',
       difficulties: ['practitioner', 'expert'],
-      prompt: 'You need the number of open tickets. What works on the fluent GraphQL client?',
+      prompt:
+        'You need the number of open tickets. What works on the fluent GraphQL client?',
       options: [
         'Call count()',
         'Select minimal fields and use results.length',
@@ -107,7 +111,8 @@ export const apps: Chapter = {
       kind: 'choice',
       id: 'apps-timeout',
       difficulties: ['expert'],
-      prompt: 'A trusted function crunches numbers for 6 minutes. What happens?',
+      prompt:
+        'A trusted function crunches numbers for 6 minutes. What happens?',
       options: [
         'It finishes fine',
         'The host aborts it — invocations are capped at 250 seconds',
@@ -139,7 +144,8 @@ export const apps: Chapter = {
       kind: 'choice',
       id: 'apps-anon',
       difficulties: ['beginner', 'practitioner'],
-      prompt: 'You want visitors to read data without signing in (@anonymous). What do you need on Fabric?',
+      prompt:
+        'You want visitors to read data without signing in (@anonymous). What do you need on Fabric?',
       options: [
         'Nothing',
         'A tenant admin must enable anonymous data access for Fabric Apps',
@@ -160,7 +166,10 @@ export const apps: Chapter = {
         ['Language', 'TypeScript only'],
         ['Database', 'MSSQL only'],
         ['Authentication', 'Fabric SSO (Entra ID single sign-on)'],
-        ['File storage', 'Available on Fabric, not in self-hosted Rayfin Local'],
+        [
+          'File storage',
+          'Available on Fabric, not in self-hosted Rayfin Local',
+        ],
       ],
       explanation:
         'Rayfin supports TypeScript only. On Fabric, databases are MSSQL, sign-in is Fabric SSO, and the storage service is available.',

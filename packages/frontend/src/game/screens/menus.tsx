@@ -4,28 +4,55 @@ import { ArrowRight, Check, Play, RotateCcw, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 import { Art } from '../art';
-import type { Chapter, ChapterId, ChapterResult as Result, Difficulty, GameState } from '../types';
+import type {
+  Chapter,
+  ChapterId,
+  ChapterResult as Result,
+  Difficulty,
+  GameState,
+} from '../types';
 import { Button } from '../ui';
 
 const DIFFICULTIES: { id: Difficulty; name: string; blurb: string }[] = [
-  { id: 'beginner', name: 'Beginner', blurb: 'New to Fabric or data tools. Hints available.' },
-  { id: 'practitioner', name: 'Practitioner', blurb: 'You build reports or pipelines. Real trade-offs.' },
-  { id: 'expert', name: 'Expert', blurb: 'You run Fabric. Edge cases and hard limits.' },
+  {
+    id: 'beginner',
+    name: 'Beginner',
+    blurb: 'New to Fabric or data tools. Hints available.',
+  },
+  {
+    id: 'practitioner',
+    name: 'Practitioner',
+    blurb: 'You build reports or pipelines. Real trade-offs.',
+  },
+  {
+    id: 'expert',
+    name: 'Expert',
+    blurb: 'You run Fabric. Edge cases and hard limits.',
+  },
 ];
 
-const percent = (r: Result) => (r.max === 0 ? 0 : Math.round((r.score / r.max) * 100));
+const percent = (r: Result) =>
+  r.max === 0 ? 0 : Math.round((r.score / r.max) * 100);
 
 export function TitleScreen({ onStart }: { onStart: () => void }) {
   return (
     <div className="mx-auto grid min-h-[80vh] max-w-5xl items-center gap-800 md:grid-cols-[1.1fr_1fr]">
-      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}>
-        <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">A Fabric App story</p>
-        <h1 className="mt-300 font-heading text-hero-1000 font-black leading-[0.95] tracking-tight">Fabric Quest</h1>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
+          A Fabric App story
+        </p>
+        <h1 className="mt-300 font-heading text-hero-1000 font-black leading-[0.95] tracking-tight">
+          Fabric Quest
+        </h1>
         <p className="mt-500 max-w-md text-500 leading-500 text-muted-foreground">
-          You are the new data lead at Aurora Outfitters. Six chapters, one data platform, and a company counting on you.
+          You are the new data lead at Aurora Outfitters. Six chapters, one data
+          platform, and a company counting on you.
         </p>
         <Button className="mt-700 px-700 py-400 text-500" onClick={onStart}>
-          <Play className="size-icon-400" aria-hidden /> Start the quest
+          <Play className="icon-size-400" aria-hidden /> Start the quest
         </Button>
       </motion.div>
       <Art id="title" className="w-full" />
@@ -33,11 +60,19 @@ export function TitleScreen({ onStart }: { onStart: () => void }) {
   );
 }
 
-export function DifficultyScreen({ onPick }: { onPick: (d: Difficulty) => void }) {
+export function DifficultyScreen({
+  onPick,
+}: {
+  onPick: (d: Difficulty) => void;
+}) {
   return (
     <div className="mx-auto max-w-4xl py-700">
-      <h1 className="font-heading text-hero-900 font-black leading-hero-900">How well do you know your data?</h1>
-      <p className="mt-300 text-500 text-muted-foreground">Pick a level. You can change it later — it restarts the campaign.</p>
+      <h1 className="font-heading text-hero-900 font-black leading-hero-900">
+        How well do you know your data?
+      </h1>
+      <p className="mt-300 text-500 text-muted-foreground">
+        Pick a level. You can change it later — it restarts the campaign.
+      </p>
       <div className="mt-700 grid gap-500 md:grid-cols-3">
         {DIFFICULTIES.map((d, i) => (
           <motion.button
@@ -52,11 +87,21 @@ export function DifficultyScreen({ onPick }: { onPick: (d: Difficulty) => void }
           >
             <span className="flex gap-100" aria-hidden>
               {[0, 1, 2].map((n) => (
-                <span key={n} className={cn('h-300 w-700 rounded-full', n <= i ? 'bg-primary' : 'bg-muted')} />
+                <span
+                  key={n}
+                  className={cn(
+                    'h-300 w-700 rounded-full',
+                    n <= i ? 'bg-primary' : 'bg-muted'
+                  )}
+                />
               ))}
             </span>
-            <span className="mt-500 block font-heading text-hero-700 font-bold">{d.name}</span>
-            <span className="mt-200 block text-400 text-muted-foreground">{d.blurb}</span>
+            <span className="mt-500 block font-heading text-hero-700 font-bold">
+              {d.name}
+            </span>
+            <span className="mt-200 block text-400 text-muted-foreground">
+              {d.blurb}
+            </span>
           </motion.button>
         ))}
       </div>
@@ -85,16 +130,23 @@ export function ChapterMap({
           <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
             {game.difficulty} campaign · {done} / {chapters.length} chapters
           </p>
-          <h1 className="mt-200 font-heading text-hero-900 font-black leading-hero-900">Aurora’s data journey</h1>
+          <h1 className="mt-200 font-heading text-hero-900 font-black leading-hero-900">
+            Aurora’s data journey
+          </h1>
         </div>
-        <Button variant="ghost" onClick={onChangeDifficulty}>Change difficulty</Button>
+        <Button variant="ghost" onClick={onChangeDifficulty}>
+          Change difficulty
+        </Button>
         {done > 0 && (
           <Button onClick={onSummary}>
-            <Trophy className="size-icon-300" aria-hidden /> Summary
+            <Trophy className="icon-size-300" aria-hidden /> Summary
           </Button>
         )}
       </header>
-      <ol aria-label="Chapters" className="mt-700 grid gap-500 sm:grid-cols-2 lg:grid-cols-3">
+      <ol
+        aria-label="Chapters"
+        className="mt-700 grid gap-500 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {chapters.map((c, i) => {
           const r = game.results[c.id];
           return (
@@ -116,15 +168,24 @@ export function ChapterMap({
                   </span>
                   {r && (
                     <span className="absolute right-400 top-400 inline-flex items-center gap-100 rounded-full bg-success px-300 py-100 text-200 font-bold text-white">
-                      <Check className="size-icon-200" aria-hidden /> {percent(r)}%
+                      <Check className="icon-size-200" aria-hidden />{' '}
+                      {percent(r)}%
                     </span>
                   )}
                 </div>
                 <div className="flex flex-1 flex-col p-500">
-                  <span className="font-heading text-500 font-bold leading-500">{c.title}</span>
-                  <span className="mt-100 text-300 text-muted-foreground">{c.tagline}</span>
+                  <span className="font-heading text-500 font-bold leading-500">
+                    {c.title}
+                  </span>
+                  <span className="mt-100 text-300 text-muted-foreground">
+                    {c.tagline}
+                  </span>
                   <span className="mt-auto inline-flex items-center gap-100 pt-400 text-300 font-semibold text-primary">
-                    {r ? 'Replay' : 'Play'} <ArrowRight className="size-icon-200 transition-transform group-hover:translate-x-1" aria-hidden />
+                    {r ? 'Replay' : 'Play'}{' '}
+                    <ArrowRight
+                      className="icon-size-200 transition-transform group-hover:translate-x-1"
+                      aria-hidden
+                    />
                   </span>
                 </div>
               </button>
@@ -155,8 +216,12 @@ export function ChapterResult({
   return (
     <div className="mx-auto max-w-2xl py-800 text-center">
       <Art id={chapter.id} className="mx-auto w-full max-w-md" />
-      <p className="mt-600 font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">Chapter complete</p>
-      <h1 className="mt-200 font-heading text-hero-900 font-black leading-hero-900">{chapter.title}</h1>
+      <p className="mt-600 font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
+        Chapter complete
+      </p>
+      <h1 className="mt-200 font-heading text-hero-900 font-black leading-hero-900">
+        {chapter.title}
+      </h1>
       <motion.p
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -164,17 +229,28 @@ export function ChapterResult({
         className="mt-500 font-numeric text-hero-1000 font-black leading-hero-1000"
       >
         {result.score}
-        <span className="text-hero-800 text-muted-foreground"> / {result.max}</span>
+        <span className="text-hero-800 text-muted-foreground">
+          {' '}
+          / {result.max}
+        </span>
       </motion.p>
-      <p className="text-500 text-muted-foreground">{p >= 80 ? 'Outstanding work.' : p >= 50 ? 'Solid — a replay will make it shine.' : 'Every expert started here. Try again?'}</p>
+      <p className="text-500 text-muted-foreground">
+        {p >= 80
+          ? 'Outstanding work.'
+          : p >= 50
+            ? 'Solid — a replay will make it shine.'
+            : 'Every expert started here. Try again?'}
+      </p>
       <div className="mt-700 flex flex-wrap justify-center gap-400">
         <Button variant="ghost" onClick={onReplay}>
-          <RotateCcw className="size-icon-300" aria-hidden /> Replay
+          <RotateCcw className="icon-size-300" aria-hidden /> Replay
         </Button>
-        <Button variant="ghost" onClick={onMap}>Back to map</Button>
+        <Button variant="ghost" onClick={onMap}>
+          Back to map
+        </Button>
         {hasNext && (
           <Button onClick={onNext}>
-            Next chapter <ArrowRight className="size-icon-300" aria-hidden />
+            Next chapter <ArrowRight className="icon-size-300" aria-hidden />
           </Button>
         )}
       </div>
@@ -195,14 +271,26 @@ export function SummaryScreen({
   const score = played.reduce((s, c) => s + game.results[c.id]!.score, 0);
   const max = played.reduce((s, c) => s + game.results[c.id]!.max, 0);
   const p = percent({ score, max });
-  const rank = p >= 85 ? 'Fabric Architect' : p >= 60 ? 'Data Lead' : p >= 30 ? 'Data Explorer' : 'Fabric Rookie';
+  const rank =
+    p >= 85
+      ? 'Fabric Architect'
+      : p >= 60
+        ? 'Data Lead'
+        : p >= 30
+          ? 'Data Explorer'
+          : 'Fabric Rookie';
 
   return (
     <div className="mx-auto max-w-3xl py-700">
-      <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">Your rank</p>
-      <h1 className="mt-200 font-heading text-hero-1000 font-black leading-[1]">{rank}</h1>
+      <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
+        Your rank
+      </p>
+      <h1 className="mt-200 font-heading text-hero-1000 font-black leading-[1]">
+        {rank}
+      </h1>
       <p className="mt-300 text-500 text-muted-foreground">
-        {score} of {max} points across {played.length} of {chapters.length} chapters · {game.difficulty}
+        {score} of {max} points across {played.length} of {chapters.length}{' '}
+        chapters · {game.difficulty}
       </p>
       <ul aria-label="Completed chapters" className="mt-700 grid gap-300">
         {played.map((c, i) => {
@@ -215,7 +303,9 @@ export function SummaryScreen({
               transition={{ delay: i * 0.06 }}
               className="flex items-center gap-400 rounded-3xl bg-card p-400 shadow-sm"
             >
-              <span className="flex-1 font-heading text-400 font-bold">{c.title}</span>
+              <span className="flex-1 font-heading text-400 font-bold">
+                {c.title}
+              </span>
               <span className="h-300 w-[30%] overflow-hidden rounded-full bg-muted">
                 <motion.span
                   className="block h-full rounded-full bg-primary"
@@ -224,12 +314,16 @@ export function SummaryScreen({
                   transition={{ delay: 0.2 + i * 0.06 }}
                 />
               </span>
-              <span className="w-[4.5rem] text-right font-numeric text-400 font-bold">{percent(r)}%</span>
+              <span className="w-[4.5rem] text-right font-numeric text-400 font-bold">
+                {percent(r)}%
+              </span>
             </motion.li>
           );
         })}
       </ul>
-      <Button className="mt-700" onClick={onMap}>Back to map</Button>
+      <Button className="mt-700" onClick={onMap}>
+        Back to map
+      </Button>
     </div>
   );
 }
