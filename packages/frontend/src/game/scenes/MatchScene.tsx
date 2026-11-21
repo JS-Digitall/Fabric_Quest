@@ -79,6 +79,11 @@ export function MatchScene({
       >
         {v}
         {at >= 0 && <span className="sr-only"> (pair {at + 1})</span>}
+        {side === 0 && locked && !right && (
+          <span className="mt-100 block text-300 font-semibold text-success">
+            → {correct.get(v)}
+          </span>
+        )}
       </motion.button>
     );
   };

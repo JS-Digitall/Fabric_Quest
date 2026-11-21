@@ -59,7 +59,7 @@ export const apps: Chapter = {
       ],
       answer: 1,
       explanation:
-        'Eventhouse (KQL) connector authoring is held in this release, so `connector add --type eventhouse` refuses. Semantic model connectors can be added today.',
+        'Eventhouse (KQL) connector authoring is held in this release, so adding an eventhouse connector is refused. Semantic model connectors can be added today.',
       source: 'rayfin-docs:cli/connectors/category-b-function-bridge.md',
     },
     {

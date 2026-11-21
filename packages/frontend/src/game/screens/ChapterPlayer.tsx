@@ -163,6 +163,7 @@ export function ChapterPlayer({
 
               {result && (
                 <Feedback
+                  correct={scoreAnswer(scene, result.answer, false) === 100}
                   points={result.points}
                   explanation={scene.explanation}
                   source={scene.source}

@@ -86,6 +86,34 @@ describe('chapter content', () => {
     }
   );
 
+  it.each(chapters.map((c) => [c.id, c] as const))(
+    '%s: every difficulty has creature (choice) and boss questions',
+    (_id, chapter) => {
+      for (const d of difficulties) {
+        const qs = scenesFor(chapter, d);
+        expect(
+          qs.some((s) => s.kind === 'choice'),
+          `${d} choice`
+        ).toBe(true);
+        expect(
+          qs.some(
+            (s) =>
+              s.kind === 'arrange' ||
+              s.kind === 'match' ||
+              s.kind === 'dashboard'
+          ),
+          `${d} boss`
+        ).toBe(true);
+      }
+    }
+  );
+
+  it('explanations contain no markdown backticks', () => {
+    for (const c of chapters)
+      for (const q of questions(c))
+        expect(q.explanation, q.id).not.toContain('`');
+  });
+
   it('has dashboards in the semantic and apps chapters', () => {
     for (const id of ['semantic', 'apps']) {
       const c = chapters.find((ch) => ch.id === id)!;

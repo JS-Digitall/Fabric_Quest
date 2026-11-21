@@ -11,18 +11,21 @@ function sourceLink(source: string) {
 }
 
 export function Feedback({
+  correct,
   points,
   explanation,
   source,
   onContinue,
 }: {
+  /** The answer itself was right; points may still be halved by a hint. */
+  correct: boolean;
   points: number;
   explanation: string;
   source: string;
   onContinue: () => void;
 }) {
-  const good = points >= 100;
-  const partial = points > 0 && !good;
+  const good = correct;
+  const partial = !correct && points > 0;
   const href = sourceLink(source);
   const next = useRef<HTMLButtonElement>(null);
   useEffect(() => next.current?.focus(), []);
