@@ -24,3 +24,14 @@ import { MotionGlobalConfig } from 'framer-motion';
 
 // Jump straight to animation targets so entrance fades don't leave content at opacity 0.
 MotionGlobalConfig.skipAnimations = true;
+
+// Phaser probes a real canvas at import time, which jsdom lacks. The world is
+// exercised in the browser; unit tests only need the module shape.
+vi.mock('phaser', () => {
+  class Scene {}
+  class Game {
+    destroy() {}
+  }
+  const Phaser = { Scene, Game, AUTO: 0, Scale: { RESIZE: 0 } };
+  return { default: Phaser, ...Phaser };
+});

@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Check, Play, RotateCcw, Trophy } from 'lucide-react';
+import { Map as MapIcon, Play } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
 import { Art } from '../art';
 import type {
   Chapter,
-  ChapterId,
   ChapterResult as Result,
   Difficulty,
   GameState,
@@ -42,18 +41,22 @@ export function TitleScreen({ onStart }: { onStart: () => void }) {
         animate={{ opacity: 1, y: 0 }}
       >
         <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
-          A Fabric App story
+          A Fabric App adventure
         </p>
         <h1 className="mt-300 font-heading text-hero-1000 font-black leading-[0.95] tracking-tight">
           Fabric Quest
         </h1>
         <p className="mt-500 max-w-md text-500 leading-500 text-muted-foreground">
-          You are the new data lead at Aurora Outfitters. Six chapters, one data
-          platform, and a company counting on you.
+          You are the new data lead at Aurora Outfitters. Explore the world of
+          Fabric, meet its keepers and tame the Data Chaos — one question at a
+          time.
         </p>
         <Button className="mt-700 px-700 py-400 text-500" onClick={onStart}>
           <Play className="icon-size-400" aria-hidden /> Start the quest
         </Button>
+        <p className="mt-400 text-300 text-muted-foreground">
+          Arrow keys or WASD to walk · Space to talk and open chests
+        </p>
       </motion.div>
       <Art id="title" className="w-full" />
     </div>
@@ -71,7 +74,7 @@ export function DifficultyScreen({
         How well do you know your data?
       </h1>
       <p className="mt-300 text-500 text-muted-foreground">
-        Pick a level. You can change it later — it restarts the campaign.
+        Pick a level. Changing it later restarts the campaign.
       </p>
       <div className="mt-700 grid gap-500 md:grid-cols-3">
         {DIFFICULTIES.map((d, i) => (
@@ -109,165 +112,16 @@ export function DifficultyScreen({
   );
 }
 
-export function ChapterMap({
-  chapters,
-  game,
-  onPlay,
-  onSummary,
-  onChangeDifficulty,
-}: {
-  chapters: Chapter[];
-  game: GameState;
-  onPlay: (id: ChapterId) => void;
-  onSummary: () => void;
-  onChangeDifficulty: () => void;
-}) {
-  const done = Object.keys(game.results).length;
-  return (
-    <div className="mx-auto max-w-6xl py-500">
-      <header className="flex flex-wrap items-end gap-400">
-        <div className="flex-1">
-          <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
-            {game.difficulty} campaign · {done} / {chapters.length} chapters
-          </p>
-          <h1 className="mt-200 font-heading text-hero-900 font-black leading-hero-900">
-            Aurora’s data journey
-          </h1>
-        </div>
-        <Button variant="ghost" onClick={onChangeDifficulty}>
-          Change difficulty
-        </Button>
-        {done > 0 && (
-          <Button onClick={onSummary}>
-            <Trophy className="icon-size-300" aria-hidden /> Summary
-          </Button>
-        )}
-      </header>
-      <ol
-        aria-label="Chapters"
-        className="mt-700 grid gap-500 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {chapters.map((c, i) => {
-          const r = game.results[c.id];
-          return (
-            <motion.li
-              key={c.id}
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06 }}
-            >
-              <button
-                type="button"
-                onClick={() => onPlay(c.id)}
-                className="group flex h-full w-full flex-col overflow-hidden rounded-4xl border-2 border-border bg-card text-left shadow-sm transition-all hover:-translate-y-1 hover:border-primary hover:shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40"
-              >
-                <div className="relative bg-muted">
-                  <Art id={c.id} className="aspect-[16/10] w-full" still />
-                  <span className="absolute left-400 top-400 grid size-800 place-items-center rounded-xl bg-card font-heading text-400 font-black shadow-sm">
-                    {i + 1}
-                  </span>
-                  {r && (
-                    <span className="absolute right-400 top-400 inline-flex items-center gap-100 rounded-full bg-success px-300 py-100 text-200 font-bold text-white">
-                      <Check className="icon-size-200" aria-hidden />{' '}
-                      {percent(r)}%
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-1 flex-col p-500">
-                  <span className="font-heading text-500 font-bold leading-500">
-                    {c.title}
-                  </span>
-                  <span className="mt-100 text-300 text-muted-foreground">
-                    {c.tagline}
-                  </span>
-                  <span className="mt-auto inline-flex items-center gap-100 pt-400 text-300 font-semibold text-primary">
-                    {r ? 'Replay' : 'Play'}{' '}
-                    <ArrowRight
-                      className="icon-size-200 transition-transform group-hover:translate-x-1"
-                      aria-hidden
-                    />
-                  </span>
-                </div>
-              </button>
-            </motion.li>
-          );
-        })}
-      </ol>
-    </div>
-  );
-}
-
-export function ChapterResult({
-  chapter,
-  result,
-  hasNext,
-  onReplay,
-  onNext,
-  onMap,
-}: {
-  chapter: Chapter;
-  result: Result;
-  hasNext: boolean;
-  onReplay: () => void;
-  onNext: () => void;
-  onMap: () => void;
-}) {
-  const p = percent(result);
-  return (
-    <div className="mx-auto max-w-2xl py-800 text-center">
-      <Art id={chapter.id} className="mx-auto w-full max-w-md" />
-      <p className="mt-600 font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
-        Chapter complete
-      </p>
-      <h1 className="mt-200 font-heading text-hero-900 font-black leading-hero-900">
-        {chapter.title}
-      </h1>
-      <motion.p
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 14 }}
-        className="mt-500 font-numeric text-hero-1000 font-black leading-hero-1000"
-      >
-        {result.score}
-        <span className="text-hero-800 text-muted-foreground">
-          {' '}
-          / {result.max}
-        </span>
-      </motion.p>
-      <p className="text-500 text-muted-foreground">
-        {p >= 80
-          ? 'Outstanding work.'
-          : p >= 50
-            ? 'Solid — a replay will make it shine.'
-            : 'Every expert started here. Try again?'}
-      </p>
-      <div className="mt-700 flex flex-wrap justify-center gap-400">
-        <Button variant="ghost" onClick={onReplay}>
-          <RotateCcw className="icon-size-300" aria-hidden /> Replay
-        </Button>
-        <Button variant="ghost" onClick={onMap}>
-          Back to map
-        </Button>
-        {hasNext && (
-          <Button onClick={onNext}>
-            Next chapter <ArrowRight className="icon-size-300" aria-hidden />
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export function SummaryScreen({
   chapters,
   game,
-  onMap,
+  onBack,
 }: {
   chapters: Chapter[];
   game: GameState;
-  onMap: () => void;
+  onBack: () => void;
 }) {
-  const played = chapters.filter((c) => game.results[c.id]);
+  const played = chapters.filter((c) => (game.results[c.id]?.max ?? 0) > 0);
   const score = played.reduce((s, c) => s + game.results[c.id]!.score, 0);
   const max = played.reduce((s, c) => s + game.results[c.id]!.max, 0);
   const p = percent({ score, max });
@@ -283,16 +137,16 @@ export function SummaryScreen({
   return (
     <div className="mx-auto max-w-3xl py-700">
       <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
-        Your rank
+        Your rank so far
       </p>
       <h1 className="mt-200 font-heading text-hero-1000 font-black leading-[1]">
         {rank}
       </h1>
       <p className="mt-300 text-500 text-muted-foreground">
         {score} of {max} points across {played.length} of {chapters.length}{' '}
-        chapters · {game.difficulty}
+        regions · {game.difficulty}
       </p>
-      <ul aria-label="Completed chapters" className="mt-700 grid gap-300">
+      <ul aria-label="Explored regions" className="mt-700 grid gap-300">
         {played.map((c, i) => {
           const r = game.results[c.id]!;
           return (
@@ -321,8 +175,8 @@ export function SummaryScreen({
           );
         })}
       </ul>
-      <Button className="mt-700" onClick={onMap}>
-        Back to map
+      <Button className="mt-700" onClick={onBack}>
+        <MapIcon className="icon-size-300" aria-hidden /> Back to the world
       </Button>
     </div>
   );

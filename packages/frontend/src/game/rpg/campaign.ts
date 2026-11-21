@@ -35,6 +35,7 @@ export interface Campaign {
   answered: Record<string, number>;
   defeatedCreatures: string[];
   bossesDefeated: RegionId[];
+  openedChests: string[];
 }
 
 export const MAX_HP = 100;
@@ -47,6 +48,7 @@ export function newCampaign(difficulty: Difficulty): Campaign {
     answered: {},
     defeatedCreatures: [],
     bossesDefeated: [],
+    openedChests: [],
   };
 }
 
