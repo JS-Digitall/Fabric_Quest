@@ -313,6 +313,15 @@ function paint(): string[] {
     }
   }
 
+  // Clear trees beside paths: a player hugging a path edge would otherwise snag on them.
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      if (g[y][x] !== 'path') continue;
+      for (let dy = -1; dy <= 1; dy++)
+        for (let dx = -1; dx <= 1; dx++)
+          if (g[y + dy]?.[x + dx] === 'tree') set(x + dx, y + dy, 'grass');
+    }
+
   // Spots always stand on open ground.
   for (const s of [...NPCS, ...CHESTS, ...BOSSES]) {
     const r = REGIONS.find((rr) => rr.id === s.region)!;

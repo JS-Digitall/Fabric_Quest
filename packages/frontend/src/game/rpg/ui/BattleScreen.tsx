@@ -109,7 +109,9 @@ export function BattleScreen({
     const out = answer(campaign, battle, a, hint);
     setOutcome({ ...out, given: a });
     setCampaign(out.campaign);
-    setFoeHp(Math.max(0, battle.foeHp - out.foeDamage));
+    setFoeHp(
+      out.result === 'won' ? 0 : Math.max(0, battle.foeHp - out.foeDamage)
+    );
     onAnswered?.(out.correct);
   }
 

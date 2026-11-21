@@ -55,6 +55,8 @@ export class WorldScene extends Phaser.Scene {
   >();
   private bosses = new Map<RegionId, Phaser.Physics.Arcade.Sprite>();
   private chests = new Map<string, Phaser.GameObjects.Sprite>();
+  /** Tracked here, not via frame names, which Phaser stores as numbers. */
+  private openChests = new Set<string>();
   private npcs: { sprite: Phaser.GameObjects.Sprite; spot: Spot }[] = [];
   private sparks!: Phaser.GameObjects.Particles.ParticleEmitter;
   private prompt!: Phaser.GameObjects.Sprite;
@@ -131,6 +133,7 @@ export class WorldScene extends Phaser.Scene {
     }
     for (const spot of CHESTS) {
       const open = this.init_.openedChests.includes(spot.id);
+      if (open) this.openChests.add(spot.id);
       this.chests.set(
         spot.id,
         this.add.sprite(center(spot.x), center(spot.y), 'chest', open ? 1 : 0)
@@ -322,6 +325,7 @@ export class WorldScene extends Phaser.Scene {
         break;
       }
       case 'open-chest':
+        this.openChests.add(c.id);
         this.chests.get(c.id)?.setFrame(1);
         break;
       case 'respawn':
@@ -398,9 +402,7 @@ export class WorldScene extends Phaser.Scene {
   private target(tx: number, ty: number): Spot | undefined {
     return (
       this.npcs.find((n) => this.near(n.spot, tx, ty))?.spot ??
-      CHESTS.find(
-        (c) => this.near(c, tx, ty) && this.chests.get(c.id)?.frame.name === '0'
-      )
+      CHESTS.find((c) => this.near(c, tx, ty) && !this.openChests.has(c.id))
     );
   }
 
@@ -421,7 +423,7 @@ export class WorldScene extends Phaser.Scene {
       );
     }
     const chest = CHESTS.find(near);
-    if (chest && this.chests.get(chest.id)?.frame.name === '0')
+    if (chest && !this.openChests.has(chest.id))
       this.touch(() =>
         this.init_.bus.emit({
           type: 'chest',

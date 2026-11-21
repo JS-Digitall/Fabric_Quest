@@ -57,6 +57,28 @@ describe('world map', () => {
     expect(inRect(SPAWN, HUB)).toBe(true);
   });
 
+  it('keeps trees off the tiles beside paths so the player never snags', () => {
+    const snags: string[] = [];
+    MAP.forEach((row, y) =>
+      [...row].forEach((ch, x) => {
+        if (LEGEND[ch] !== 'path') return;
+        for (const [dx, dy] of [
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [-1, 0],
+          [1, 0],
+          [-1, 1],
+          [0, 1],
+          [1, 1],
+        ])
+          if (LEGEND[MAP[y + dy]?.[x + dx]] === 'tree')
+            snags.push(`${x + dx},${y + dy}`);
+      })
+    );
+    expect(snags).toEqual([]);
+  });
+
   it('treats out-of-bounds as solid', () => {
     expect(walkable(-1, 0)).toBe(false);
     expect(walkable(0, 999)).toBe(false);

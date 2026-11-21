@@ -129,6 +129,22 @@ describe('BattleScreen', () => {
     expect(screen.queryByRole('button', { name: /run away/i })).toBeNull();
   });
 
+  it('empties the boss HP bar when its last question is done, even after a miss', () => {
+    const c = newCampaign('beginner');
+    render(
+      <BattleScreen
+        chapter={chapter}
+        campaign={c}
+        battle={startBossBattle(c, chapter)!}
+        onEnd={vi.fn()}
+      />
+    );
+    click('Right');
+    click(/continue/i);
+    click('Wrong');
+    expect(hpOf(/foe hp/i)).toBe(0);
+  });
+
   it('moves a boss on to its next question after Continue', () => {
     const c = newCampaign('beginner');
     const onEnd = vi.fn();
