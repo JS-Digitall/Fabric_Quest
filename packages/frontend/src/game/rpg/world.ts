@@ -186,16 +186,20 @@ function paint(): string[] {
       else if (n < 11) set(x, y, 'flowers');
     }
   for (let x = 0; x < W; x++) {
-    (set(x, 0, 'tree'),
-      set(x, 1, 'tree'),
-      set(x, H - 1, 'tree'),
-      set(x, H - 2, 'tree'));
+    {
+      set(x, 0, 'tree');
+      set(x, 1, 'tree');
+      set(x, H - 1, 'tree');
+      set(x, H - 2, 'tree');
+    }
   }
   for (let y = 0; y < H; y++) {
-    (set(0, y, 'tree'),
-      set(1, y, 'tree'),
-      set(W - 1, y, 'tree'),
-      set(W - 2, y, 'tree'));
+    {
+      set(0, y, 'tree');
+      set(1, y, 'tree');
+      set(W - 1, y, 'tree');
+      set(W - 2, y, 'tree');
+    }
   }
 
   // Hub village: a stone plaza with a flower ring.
@@ -209,12 +213,16 @@ function paint(): string[] {
     const outside = r.door === 'bottom' ? r.rect.y + r.rect.h : r.rect.y - 1;
     const hubEdge = r.door === 'bottom' ? HUB.y : HUB.y + HUB.h - 1;
     const midY = r.door === 'bottom' ? outside + 1 : outside - 1;
-    for (let x = Math.min(dx, SPAWN.x); x <= Math.max(dx, SPAWN.x); x++)
-      (set(x, midY, 'path'), set(x, midY + 1, 'path'));
+    for (let x = Math.min(dx, SPAWN.x); x <= Math.max(dx, SPAWN.x); x++) {
+      set(x, midY, 'path');
+      set(x, midY + 1, 'path');
+    }
     for (let y = Math.min(outside, midY); y <= Math.max(outside, midY); y++)
       set(dx, y, 'path');
-    for (let y = Math.min(midY, hubEdge); y <= Math.max(midY, hubEdge); y++)
-      (set(SPAWN.x, y, 'path'), set(SPAWN.x - 1, y, 'path'));
+    for (let y = Math.min(midY, hubEdge); y <= Math.max(midY, hubEdge); y++) {
+      set(SPAWN.x, y, 'path');
+      set(SPAWN.x - 1, y, 'path');
+    }
   }
 
   // Regions: ground, solid edge with a door, then signature decorations.
@@ -235,8 +243,10 @@ function paint(): string[] {
             const ey = (yy - cy) / 5;
             if (ex * ex + ey * ey < 1) set(xx, yy, 'water');
           }
-        for (let yy = cy - 6; yy <= cy + 6; yy++)
-          (set(cx, yy, 'bridge'), set(cx - 1, yy, 'bridge'));
+        for (let yy = cy - 6; yy <= cy + 6; yy++) {
+          set(cx, yy, 'bridge');
+          set(cx - 1, yy, 'bridge');
+        }
         break;
       case 'ingest':
         // Foundry pillars: rows of walls with gaps.
