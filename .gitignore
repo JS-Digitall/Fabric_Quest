@@ -45,3 +45,6 @@ rayfin.config.json
 *.njsproj
 *.sln
 *.sw?
+
+# rayfin-local backend state (local SQLite, sessions)
+.rayfin-local

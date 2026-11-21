@@ -11,6 +11,18 @@
   --color-brand: #0b8a7a; /* bar/area fills, button-like brand surfaces */
   --color-brand-foreground: #0b8a7a; /* line/point marks, branded text & emphasis */
   --color-hover: #fff4dc; /* row/cell hover surface in DataGrid + visuals */
+
+  /* Categorical chart palette read by VegaVisual */
+  --color-data-1: #0b7a6c;
+  --color-data-2: #e09a00;
+  --color-data-3: #ef6f52;
+  --color-data-4: #6c5ce7;
+  --color-data-5: #2d7dd2;
+  --color-data-6: #1d8a4c;
+  --color-data-7: #c2487a;
+  --color-data-8: #8a6d3b;
+  --color-data-9: #4b6584;
+  --color-data-10: #a3a847;
 }
 
 @theme {
@@ -187,6 +199,17 @@
     --color-brand: #2bc4ad;
     --color-brand-foreground: #2bc4ad;
     --color-hover: #22304f;
+
+    --color-data-1: #2bc4ad;
+    --color-data-2: #ffc53d;
+    --color-data-3: #ff8a6b;
+    --color-data-4: #9b8cff;
+    --color-data-5: #5aa9f0;
+    --color-data-6: #3ccf7f;
+    --color-data-7: #f07aa8;
+    --color-data-8: #c9a56a;
+    --color-data-9: #8fa6c6;
+    --color-data-10: #cdd36b;
   }
 }
 
