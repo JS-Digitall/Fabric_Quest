@@ -8,6 +8,7 @@ import {
   MAP,
   LEGEND,
   NPCS,
+  REGIONS,
   SOLID,
   SPAWN,
   TILE,
@@ -61,6 +62,11 @@ export class WorldScene extends Phaser.Scene {
   private openChests = new Set<string>();
   private npcs: { sprite: Phaser.GameObjects.Sprite; spot: Spot }[] = [];
   private sparks!: Phaser.GameObjects.Particles.ParticleEmitter;
+  private grade?: Phaser.Filters.ColorMatrix;
+  private ambience = new Map<
+    RegionId,
+    Phaser.GameObjects.Particles.ParticleEmitter
+  >();
   private prompt!: Phaser.GameObjects.Sprite;
   /** Drop shadows that follow their sprite; depth is y-sorted every frame. */
   private shadows: {
@@ -246,6 +252,7 @@ export class WorldScene extends Phaser.Scene {
     cam.setZoom(3);
     cam.startFollow(this.player, true, 0.15, 0.15);
     cam.setRoundPixels(true);
+    this.atmosphere();
 
     const kb = this.input.keyboard!;
     const K = Phaser.Input.Keyboard.KeyCodes;
@@ -277,6 +284,172 @@ export class WorldScene extends Phaser.Scene {
           entities: this.children.length,
         }),
     });
+  }
+
+  /**
+   * Light and air: a vignette and per-region colour grade (WebGL only — on Canvas
+   * the world simply looks unfiltered), additive glows on lamps, lava and
+   * crystals, and a particle mood per region.
+   */
+  private atmosphere() {
+    const reduced = this.init_.reducedMotion;
+    const cam = this.cameras.main;
+    const webgl = this.game.renderer.type === Phaser.WEBGL;
+    if (webgl && cam.filters) {
+      cam.filters.external.addVignette(0.5, 0.5, 0.78, 0.38, 0x050816);
+      this.grade = cam.filters.internal.addColorMatrix();
+    }
+
+    // Glows: every lamp and lava/crystal pool; every other tile along region edges.
+    // Canvas can't tint, so the glows would blow out white — skip them there.
+    if (webgl) this.addGlows(reduced);
+    if (!reduced) this.addAmbience();
+  }
+
+  private addGlows(reduced: boolean) {
+    const tints: Partial<Record<string, number>> = {
+      lamp: 0xffcf6e,
+      lava: 0xff6a2a,
+      crystal: 0xa58cff,
+    };
+    const glows: Phaser.GameObjects.Image[] = [];
+    MAP.forEach((row, y) =>
+      [...row].forEach((ch, x) => {
+        const kind = LEGEND[ch];
+        const tint = tints[kind];
+        if (tint === undefined) return;
+        const edge = REGIONS.some(
+          (r) =>
+            (x === r.rect.x ||
+              y === r.rect.y ||
+              x === r.rect.x + r.rect.w - 1 ||
+              y === r.rect.y + r.rect.h - 1) &&
+            regionAt(x, y) === r.id
+        );
+        if (edge && (x + y) % 2) return;
+        const g = this.add
+          .image(center(x), center(y), 'glow')
+          .setTint(tint)
+          .setBlendMode(Phaser.BlendModes.ADD)
+          .setScale(kind === 'lamp' ? 2.2 : 1.4)
+          .setAlpha(kind === 'lamp' ? 0.55 : 0.32)
+          .setDepth(TOP - 1);
+        g.setData('base', g.alpha);
+        glows.push(g);
+      })
+    );
+    if (!reduced)
+      this.tweens.addCounter({
+        from: 0,
+        to: Math.PI * 2,
+        duration: 2600,
+        repeat: -1,
+        onUpdate: (t) => {
+          const v = t.getValue() ?? 0;
+          for (const g of glows)
+            g.setAlpha(g.getData('base') * (0.82 + 0.18 * Math.sin(v + g.x)));
+        },
+      });
+  }
+
+  /** One emitter per region, running only while the player is inside it. */
+  private addAmbience() {
+    const moods: Record<
+      RegionId,
+      Phaser.Types.GameObjects.Particles.ParticleEmitterConfig
+    > = {
+      onelake: {
+        tint: [0xffffff, 0x8fd0ff],
+        speedY: { min: -6, max: -14 },
+        lifespan: 1400,
+        frequency: 90,
+      },
+      ingest: {
+        tint: [0xffb02e, 0xff6a2a],
+        speedY: { min: -18, max: -36 },
+        speedX: { min: -6, max: 6 },
+        lifespan: 1600,
+        frequency: 110,
+      },
+      semantic: {
+        tint: [0xa58cff, 0xffffff],
+        speedX: { min: -8, max: 8 },
+        speedY: { min: -4, max: 4 },
+        lifespan: 2400,
+        frequency: 130,
+      },
+      governance: {
+        tint: [0xcfd6e6],
+        speedX: { min: 4, max: 10 },
+        speedY: { min: -2, max: 2 },
+        lifespan: 2600,
+        frequency: 160,
+      },
+      fabriciq: {
+        tint: [0xffffff, 0xff9ecb],
+        speed: 0,
+        lifespan: 1000,
+        frequency: 70,
+        scale: { start: 0, end: 0.9 },
+      },
+      apps: {
+        tint: [0xffd23f, 0xff6a2a],
+        speedY: { min: -40, max: -70 },
+        gravityY: 70,
+        lifespan: 1100,
+        frequency: 90,
+      },
+    };
+    for (const r of REGIONS) {
+      const zone = new Phaser.Geom.Rectangle(
+        r.rect.x * TILE,
+        r.rect.y * TILE,
+        r.rect.w * TILE,
+        r.rect.h * TILE
+      );
+      const emitter = this.add.particles(0, 0, 'spark', {
+        scale: { start: 1, end: 0 },
+        alpha: { start: 0.9, end: 0 },
+        blendMode: Phaser.BlendModes.ADD,
+        emitZone: { type: 'random', source: zone, quantity: 1 },
+        emitting: false,
+        ...moods[r.id],
+      });
+      emitter.setDepth(TOP - 2);
+      this.ambience.set(r.id, emitter);
+    }
+  }
+
+  /** Switch the region's particles on and nudge the colour grade. */
+  private setMood(region: RegionId | 'hub' | null) {
+    for (const [id, emitter] of this.ambience)
+      if (id === region) emitter.start();
+      else emitter.stop();
+    const m = this.grade?.colorMatrix;
+    if (!m) return;
+    m.reset();
+    switch (region) {
+      case 'onelake':
+        m.saturate(0.15).hue(-6, true);
+        break;
+      case 'ingest':
+        m.contrast(0.08).hue(6, true);
+        break;
+      case 'semantic':
+        m.hue(-12, true).saturate(0.08, true);
+        break;
+      case 'governance':
+        m.saturate(-0.12).contrast(0.1, true);
+        break;
+      case 'fabriciq':
+        m.hue(-18, true).brightness(0.96, true);
+        break;
+      case 'apps':
+        m.hue(8, true).contrast(0.12, true);
+        break;
+      default:
+        m.saturate(0.1);
+    }
   }
 
   /** A soft oval shadow that follows `sprite`, `dy` px below its centre. */
@@ -453,6 +626,7 @@ export class WorldScene extends Phaser.Scene {
       if (region !== this.lastRegion) {
         this.lastRegion = region;
         this.init_.bus.emit({ type: 'region', region });
+        this.setMood(region);
       }
     }
 
