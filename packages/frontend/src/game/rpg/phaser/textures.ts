@@ -518,6 +518,13 @@ export function buildTextures(scene: Phaser.Scene) {
   sheet(scene, 'chest', 16, 16, 2, (c, i) => drawChest(c, i * 16, i === 1));
   sheet(scene, 'fountain', 32, 32, 2, (c, i) => drawFountain(c, i * 32, i));
   sheet(scene, 'spark', 4, 4, 1, (c) => px(c, 0, 0, 4, 4, '#ffffff'));
+  // Ambient twinkle: a tiny four-point star with a bright core.
+  sheet(scene, 'mote', 5, 5, 1, (c) => {
+    px(c, 2, 0, 1, 5, 'rgba(255,255,255,0.55)');
+    px(c, 0, 2, 5, 1, 'rgba(255,255,255,0.55)');
+    px(c, 1, 1, 3, 3, 'rgba(255,255,255,0.8)');
+    px(c, 2, 2, 1, 1, '#ffffff');
+  });
   // Soft oval drop shadow placed under every sprite.
   sheet(scene, 'shadow', 14, 5, 1, (c) => {
     px(c, 2, 0, 10, 5, 'rgba(0,0,0,0.28)');

@@ -1,209 +1,179 @@
-# Universal App Template
+# Fabric Quest
 
-> **⚠️ This repository is under active development.** Features and instructions may change.
+**A pixel-art JRPG that teaches Microsoft Fabric, built as a Fabric App.**
 
-This is the workspace template the Rayfin Copilot plugin uses to build Fabric Apps.
-The base is small on purpose: dynamic authentication, theming, an error boundary, and a welcome page that works inside or outside the Fabric portal after sign-in.
-Capabilities such as Power BI analytics and trusted server-side functions are added on demand with `npm run pack:add -- <pack>`.
+You are the new data lead at Aurora Outfitters. Explore a world of six regions (OneLake, Data Factory, semantic models, governance, Fabric IQ and Fabric Apps), talk to the people who look after each place, open chests, and tame the *Data Chaos* in turn-based battles where every attack is a question. Pick a difficulty that matches your experience, from people new to data tools to people who run Fabric for a living.
 
-## Workspace layout
+The game also shows how far a Fabric App can go. It runs a real-time game engine, generated pixel art and sound, lighting and particles, and charts, all inside a React app that sits behind Fabric sign-in.
 
-The application is an npm workspace with one control root and three base packages:
+![Title screen: the Fabric Quest logo over the live world](docs/images/title.png)
 
-```text
-.
-├── package.json                 # Root commands, workspace members, and applied packs
-├── rayfin/
-│   └── rayfin.yml               # Rayfin services and package paths
-├── packages/
-│   ├── frontend/                # React, Vite, UI, and static output
-│   ├── data/                    # Entity registration and data schema exports
-│   └── shared/                  # Isomorphic contracts shared across runtimes
-└── scripts/                     # Capability-pack tooling and template checks
-```
+| Explore the world | Battle with knowledge |
+| --- | --- |
+| ![OneLake Shore with the HUD, minimap and live FPS meter](docs/images/world.png) | ![A boss battle: stage, segmented HP bars and the command window](docs/images/battle.png) |
 
-The packages have stable internal names: `@rayfin-app/frontend`, `@rayfin-app/data`, and `@rayfin-app/shared`.
-Scaffolding personalizes only the root package name; it does not rename member packages, local dependency keys, or import specifiers.
-The root coordinates the workspace but is not another application package.
+## Features
 
-The base does not include `packages/functions`.
-That package is created only when the functions capability is applied.
+- **Six regions, one per topic.** Each has a keeper with a story, roaming creatures, two treasure chests and a boss.
 
-## Root and package commands
+  | Region | Topic |
+  | --- | --- |
+  | OneLake Shore | OneLake, shortcuts, mirroring and open formats |
+  | Data Factory Foundry | Copy job, Mirroring, pipelines, Dataflow Gen2 and Eventstreams |
+  | Semantic Spire | Import, DirectQuery and Direct Lake |
+  | Governance Citadel | Workspace roles, endorsement and sensitivity labels |
+  | IQ Observatory | Fabric IQ and ontologies |
+  | App Forge | Fabric Apps and their real limits |
 
-Run the normal workflow from the workspace root:
+- **Turn-based battles.** A correct answer deals damage and a wrong one costs you HP. Bosses use ordering, matching and chart puzzles. If you faint, you wake up at the hub and keep your answers.
+- **Three difficulties.** Beginner (with hints), Practitioner and Expert each draw a different set of questions.
+- **Facts you can trust.** Every answer explains why and links to its source on Microsoft Learn.
+- **Showcase visuals, all generated in code:**
+  - a shared pixel UI kit
+  - outlined, shaded sprites with drop shadows
+  - animated water and lava
+  - glowing lamps, lava and crystals
+  - per-region particles and colour grading
+  - a cinematic title over the live world
+  - chiptune sound effects
+- **A live engine readout.** The FPS and object counter on screen is a reminder that this is a Fabric App.
+- **Accessible.** The game can be played with the keyboard alone. Menus use roving focus, screen-reader roles and labels are in place, and `prefers-reduced-motion` turns off shake, panning and particles.
 
-| Command                      | What it does                                                          |
-| ---------------------------- | --------------------------------------------------------------------- |
-| `npm run dev`                | Starts Rayfin local services and the frontend development server.     |
-| `npm run dev:frontend`       | Starts only the frontend development server.                          |
-| `npm run build`              | Builds shared contracts, data definitions, and the frontend in order. |
-| `npm run build:fabric`       | Builds the workspace with the frontend's Fabric packaging behavior.   |
-| `npm run typecheck`          | Type-checks the referenced workspace projects.                        |
-| `npm run lint`               | Lints the frontend package.                                           |
-| `npm test`                   | Runs the frontend test suite.                                         |
-| `npm run preview`            | Previews the built frontend.                                          |
-| `npm run pack:add -- <pack>` | Applies a capability pack and installs its dependencies.              |
-| `npm run rayfin:up`          | Provisions or updates the app's Fabric resources.                     |
-| `npm run test:template`      | Runs template and capability-pack contract tests.                     |
+### Controls
 
-Root commands are the supported day-to-day interface and are also used by plugin validation.
-For focused work, npm workspace commands remain available:
+| Key | Action |
+| --- | --- |
+| WASD or arrow keys | Walk |
+| Space or Enter | Talk to a character or open a chest |
+| ↑ / ↓ and Enter | Choose an answer in battle |
+| ↑ / ↓ on a focused card | Reorder cards in an ordering puzzle |
 
-```sh
-npm run -w @rayfin-app/frontend test
-npm run -w @rayfin-app/data build
-npm run -w @rayfin-app/shared build
-```
+## Quick start
 
-Rayfin service commands run from each configured service path, so service build commands are package-local:
-
-- Data uses `packages/data` and runs `npm run build` there.
-- Static hosting uses `packages/frontend`, runs `npm run build:fabric` there, and packages `packages/frontend/dist`.
-- Functions remains disabled until its pack configures `packages/functions`.
-
-## The starting view
-
-`packages/frontend/src/App.tsx` starts on a short introduction to what a Fabric App can do.
-The introduction and live source activity ship in every scaffold.
-The optional Finley mascot is off by default.
-Default scaffolds contain no companion code, styles, or tests.
-Replace `<EmptyStatePreview />` in `App.tsx` with your own view when you start building.
-The welcome page is app content and requires an authenticated session.
-The app follows the operating-system theme by default, while explicit host appearance and user theme choices take precedence.
-
-Hosted assets are protected by default and standalone sign-in is enabled in `rayfin/rayfin.yml`.
-The dynamic auth service lets the SDK establish the current embedded identity before restoring a standalone session or falling back to Rayfin CLI sign-in during local development.
-When automatic authentication is unavailable, the gate offers Microsoft sign-in from a user gesture instead of rejecting an outside-portal browser.
-Configuration or authentication failures never expose the welcome or other app content.
-Features use `await getRayfinClient()` for authorized service operations; keep the root authentication boundary intact.
-
-During `npm run dev:frontend`, the first source change moves the page from the introduction to a live building view.
-It reflects the source you add and edit across the workspace: screens and styling in `packages/frontend`, shared logic in `packages/shared`, owned records in `packages/data`, and connections in `rayfin/`.
-Authored frontend service modules contribute to **Calculations**; the stock authentication service stays excluded.
-It reports observed edits only, never build progress or a claim that the app is finished.
-A missed poll keeps the last observed state rather than returning to the introduction.
-A production build ships no dev endpoint, so the page stays on the introduction.
-The development-only feed is provided by `@microsoft/rayfin-local-dev` and never reaches the production bundle.
-
-### Replacing the welcome
-
-Replace the `EmptyStatePreview` import and render in `packages/frontend/src/App.tsx` with your app.
-If removing the welcome files, first remove `sourceActivity: true` from the `rayfinLocalDev` options in `packages/frontend/vite.config.ts`.
-Update `App.spec.tsx` and `Root.spec.tsx` for the new view, removing their `Welcome.activity` mocks and welcome-specific assertions while preserving auth-gate coverage.
-Then remove `EmptyStatePreview.tsx`, `Welcome*`, and `FabricAppMark.tsx`.
-If the optional companion was included, remove `Finley.tsx`, `Finley.css`, and `Finley.spec.tsx` too.
-Run typecheck, build, and tests after cleanup so no dangling imports remain.
-
-## Capability packs
-
-Apply a capability before customizing the app:
+You need **Node.js 22.13 or later**.
 
 ```sh
-npm run pack:add -- analytics
-npm run pack:add -- functions
-npm run pack:add -- storage
+npm install
 ```
 
-Storage is still rolling out and is not enabled in every Fabric environment yet.
-Confirm that the target environment supports storage before building file uploads or attachments.
+### Option A: fully local, no Fabric needed
 
-Packs install dependencies with one root npm workspace install.
-They do not create nested lockfiles or a separate nested installation.
-
-The functions pack creates `packages/functions` as `@rayfin-app/functions`, enables the service at that path, and wires its generated schema into the frontend client.
-It composes the functions build into the root build, Fabric build, and type-check commands.
-Reapplying the pack preserves authored files.
-
-The storage pack enables storage and the data service it requires, adds a `packages/storage` workspace with an owner-scoped starter folder, and composes typed storage onto the frontend client.
-Keep `packages/frontend/src/lib/storage-schema.ts` aligned with the folders registered in `packages/storage/rayfin/storage/schema.ts`.
-
-If an install fails, the runner rolls back pack-owned file changes and reports any concurrent edits it cannot safely restore.
-It preserves the install error and leaves the pack retryable.
-Installed dependencies and installer-written lockfiles are not rolled back.
-Follow the [failure recovery guidance](scripts/pack-manifest.md#failure-recovery) before continuing.
-
-Template tests validate the pack structure and wiring.
-With app dependencies installed, they also check the starter and analytics seed against the generated frontend lint rules.
-They do not validate deployed secrets, app-identity permissions, downstream endpoints, or the maximum duration supported by the hosted functions path.
-
-## Distribution and repository validation
-
-The CLI and VS Code display this workspace as **✨ Use default template**, using the existing `blankapp` template ID.
-Its canonical `universal-app` name remains hidden to avoid a duplicate listing, but it stays selectable explicitly for plugin automation.
-
-Inside the Rayfin repository, the parent `samples/universal-app/` directory is a contributor-only Rush validation harness.
-The harness generates an ephemeral `target/`, replaces published Rayfin ranges only in that target with repository-local package links, installs it, and runs the root validation commands.
-The outer harness, local links, generated target, and target install output are not part of a generated app.
-The committed inner template keeps published Rayfin ranges and uses `*` for local workspace members, so it remains distributable without repository-relative dependencies.
-
-## Prerequisites
-
-Install a [supported Node.js release](https://nodejs.org/en/download): Node.js 20, 22, or 24.
-Docker Desktop or Docker Engine is required only when using the Docker development provider.
-Rayfin handles Fabric sign-in when needed.
-Protected sites sign in automatically when hosted, while public sites show a Microsoft sign-in screen.
-Local development auto-signs in for both site types (`autoLogin: true` is set in `vite.config.ts`) using the Rayfin CLI session.
-Run `npx rayfin login` before starting the app if you need to sign in or switch accounts.
-GitHub Copilot CLI is not required to scaffold or run this app.
-
-## Instructions for building a new web app
-
-1. **Open the generated app**: Open a terminal in the project created by the Rayfin CLI, VS Code, or the Rayfin Copilot plugin.
-2. **Install dependencies if needed**: Run `npm install` from the workspace root.
-3. **Build the app**: Use your preferred editor or coding agent.
-   If you use GitHub Copilot CLI, run `copilot`, then describe what you want to build.
-   If the app should read an existing Power BI semantic model, include its name or dataset ID.
-   If it should own its own records, or you want a mock-up, say so instead.
-4. **Deploy it**: Ask Copilot to deploy, or run `npm run rayfin:up`, then open the Fabric URL it returns.
-   Both the direct static-hosting URL and the Fabric portal URL support authenticated use.
-   App content remains protected until sign-in succeeds.
-
-## Seeing your changes
-
-The recommended loop runs both Rayfin services and the frontend:
+[rayfin-local](https://github.com/spatney/rayfin-local) runs the app's whole backend on your machine and stands in for Fabric sign-in. It is a community project (MIT licence), not an official Microsoft product. Install it as its README describes, then start the app from the repository root:
 
 ```sh
+rayfin-local serve
+```
+
+Open <http://localhost:5173/>. You are signed in automatically, and nothing is deployed to Fabric.
+
+### Option B: against a Fabric backend
+
+```sh
+npx rayfin login
 npm run dev
 ```
 
-To run only Vite while working on frontend code:
+`npm run dev` uses the Fabric backend provider and creates a missing app backend in your workspace. See the [Rayfin CLI guide](node_modules/@microsoft/rayfin-guide/assets/docs/cli/quickstart.md), installed with the dependencies.
 
-```sh
-npm run dev:frontend
+## How it's built
+
+| Layer | Technology |
+| --- | --- |
+| App platform | Rayfin / Fabric Apps (React 19 + Vite), protected hosting, Fabric sign-in |
+| Game world | Phaser 4: tilemap, arcade physics, camera, particles, WebGL filters |
+| UI | React overlays, framer-motion and Tailwind v4 tokens, in a custom pixel UI kit |
+| Charts | Microsoft Fabric visuals (`VegaVisual`) |
+| Tests | Vitest + Testing Library |
+
+React owns the game state and every window. Phaser owns the world. The two talk through a small typed event bus: the world reports what the player touched, and the UI sends back commands such as `pause`, `remove-creature` and `respawn`.
+
+```text
+packages/frontend/src/game/
+├── GameApp.tsx              # Screen flow: title → difficulty → world ↔ summary
+├── useGame.ts               # Top-level game state (campaign survives screen changes)
+├── engine.ts                # Scoring and difficulty filtering
+├── content/                 # Six verified chapters of questions, one file per region
+├── scenes/                  # Puzzle pieces reused in battles (feedback, ordering, matching, chart)
+├── screens/menus.tsx        # Title, save slots, quest log
+└── rpg/
+    ├── campaign.ts          # Battles, HP, bosses, region clearing (pure, tested)
+    ├── world.ts             # The 96×72 tile map, regions, NPCs, chests (pure, tested)
+    ├── sound.ts             # WebAudio chiptune effects
+    ├── phaser/              # WorldScene, generated textures, event bus, React mount
+    └── ui/                  # Pixel UI kit, HUD, battle, dialogue, chest card, attract mode
 ```
 
-To update the deployed app:
+No image or audio files ship with the game. Every tile, sprite, glow and sound is generated at runtime, which keeps the art original and the bundle free of binary assets.
+
+## Content and fact checking
+
+The questions live in `packages/frontend/src/game/content/`. Each one has the correct answer, an explanation and a `source`:
+
+- For OneLake, Data Factory, semantic models, governance and Fabric IQ, the source is a `learn.microsoft.com` page.
+- For the App Forge (Fabric App limits), the source is the Rayfin guide that ships with the project (`rayfin-docs:…`).
+
+Facts were checked against those sources when they were written, and anything that couldn't be verified was dropped. `content.spec.ts` enforces the structure:
+
+- every question has an explanation and an allowed source
+- every region has at least four questions per difficulty, with both creature questions and boss puzzles
+- answers are well-formed
+- explanations contain no stray markup
+
+## The Fabric App limits it teaches
+
+The App Forge turns real platform limits into challenges. The facts come from the installed Rayfin guide:
+
+- Collection queries return one page (100 records by default), so long lists must page through results.
+- Eventhouse (KQL) connector authoring is held in this release.
+- Many-to-many relationships need an explicit join entity.
+- `count()` isn't available on the fluent GraphQL client.
+- The compressed static hosting upload is limited to 100 MB.
+- Function invocations are capped at 250 seconds.
+- `@text()` fields should set a `max`.
+- Anonymous data access needs a tenant admin setting.
+
+## Quality checks
+
+Run these from the repository root, one at a time:
 
 ```sh
+npm run typecheck
+npm run build
+npm run lint
+npm test
+npm run validate:visual
+```
+
+`npm test` runs the game logic, content guarantees, world map reachability, battle flow, the keyboard command menu, and the authentication gate. Phaser itself is stubbed in unit tests and checked in the browser.
+
+### All root commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Starts Rayfin services (Fabric backend) and the frontend dev server. |
+| `npm run dev:frontend` | Starts only the frontend dev server. |
+| `npm run build` | Builds shared contracts, data definitions and the frontend in order. |
+| `npm run build:fabric` | Builds with the frontend's Fabric packaging behaviour. |
+| `npm run typecheck` | Type-checks the referenced workspace projects. |
+| `npm run lint` | Lints the frontend package. |
+| `npm test` | Runs the frontend test suite. |
+| `npm run validate:visual` | Checks chart specifications offline. |
+| `npm run rayfin:up` | Provisions or updates the app's Fabric resources. |
+
+## Deploying to Fabric
+
+Deployment is optional. Fabric Quest runs fully locally. When you're ready, sign in, preview the target workspace, and then deploy:
+
+```sh
+npx rayfin login
 npm run rayfin:up
 ```
 
-Open the direct hosting URL to use the app standalone, or the [Fabric portal](https://app.fabric.microsoft.com) to see it inside the Fabric shell.
+Hosted assets stay protected (`assetAccess: protected`), and the game is only reachable after Fabric sign-in. Follow the installed Rayfin CLI guide for workspace selection and deployment options.
 
-<details>
-<summary><strong>💡 Tips</strong></summary>
+## Credits
 
-- Use **Shift + Tab** in Copilot to switch to **Plan mode**, where Copilot will present a plan and ask for confirmation before writing any code.
-
-</details>
-
-<details>
-<summary><strong>📝 Example prompts</strong></summary>
-
-- `Create a sales performance dashboard using the "Contoso Sales" semantic model. Include revenue KPIs, a monthly trend line chart, top 10 stores by profit, and a regional breakdown bar chart.`
-- `Build an executive summary app for the "HR Analytics" model with headcount by department, attrition rate trends over the past 3 years, and a data grid of open positions sorted by days-to-fill.`
-- `I want a customer insights app using dataset ID 4053a155-34a9-4b74-9bc2-e162f1b27fc7. Show customer lifetime value distribution, churn risk segmentation, and a filterable table of top accounts.`
-- `Create a supply chain monitoring dashboard from the "Logistics Ops" model. I need inventory levels by warehouse, on-time delivery rate KPIs, and a heatmap of shipping delays by region and month.`
-- `Build a financial reporting app using the "GL Financials" semantic model with a P&L summary, expense breakdown by cost center, and quarter-over-quarter variance charts. Add a date range filter across all visuals.`
-- `Build an app where my team can log onboarding tasks and tick them off, where each person only sees their own.`
-- `Build me a mock-up dashboard of support ticket volume — I don't have a data source yet, use sample data.`
-- `Build a workflow that submits approved requests to our third-party fulfillment API without exposing its API key.`
-- `Build an app that asks our published Fabric data agent a question and shows the answer.`
-- `Build an expense tracker where each receipt can include an uploaded image.`
-
-</details>
-
-## Need help?
-
-If you have any questions or run into any problems, please [file a Rayfin issue](https://github.com/microsoft/project-rayfin/issues/new/choose).
+- Built on the Rayfin **Universal App** template for Fabric Apps.
+- Questions verified against [Microsoft Learn](https://learn.microsoft.com/fabric/) and the Rayfin guide.
+- The world, characters and sounds are original and generated in code. The story company, Aurora Outfitters, is fictional, and so is the data shown in the chart questions.
+- Released under the [MIT License](LICENSE).

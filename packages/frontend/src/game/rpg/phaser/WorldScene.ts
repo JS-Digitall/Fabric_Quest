@@ -410,7 +410,7 @@ export class WorldScene extends Phaser.Scene {
         r.rect.w * TILE,
         r.rect.h * TILE
       );
-      const emitter = this.add.particles(0, 0, 'spark', {
+      const emitter = this.add.particles(0, 0, 'mote', {
         scale: { start: 1, end: 0 },
         alpha: { start: 0.9, end: 0 },
         blendMode: Phaser.BlendModes.ADD,
