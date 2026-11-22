@@ -505,7 +505,10 @@ export class WorldScene extends Phaser.Scene {
         img.destroy();
         return false;
       }
-      img.setPosition(sprite.x, sprite.y + dy).setAlpha(sprite.alpha);
+      img
+        .setPosition(sprite.x, sprite.y + dy)
+        .setAlpha(sprite.alpha)
+        .setVisible(sprite.visible);
       sprite.setDepth(sprite.y + dy);
       img.setDepth(sprite.y + dy - 1);
       return true;

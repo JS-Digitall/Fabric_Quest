@@ -88,6 +88,24 @@ describe('BattleScreen', () => {
     expect(screen.getByText(/takes 100 damage/i)).toBeInTheDocument();
   });
 
+  it('puts focus on the first answer when a question appears, and again on the next boss question', () => {
+    const c = newCampaign('beginner');
+    render(
+      <BattleScreen
+        chapter={chapter}
+        campaign={c}
+        battle={startBossBattle(c, chapter)!}
+        onEnd={vi.fn()}
+      />
+    );
+    expect(screen.getByRole('button', { name: 'Wrong' })).toHaveFocus();
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowDown' });
+    fireEvent.click(document.activeElement!);
+    fireEvent.click(document.activeElement!); // Continue is focused after answering
+    expect(screen.getByText('Question b2')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Wrong' })).toHaveFocus();
+  });
+
   it('says the foe dodges when the answer misses', () => {
     const c = newCampaign('beginner');
     render(

@@ -213,20 +213,23 @@ export function WorldView({
   return (
     <div className="relative h-full w-full">
       <PhaserGame bus={bus} {...initial} />
-      <Hud
-        hp={campaign.hp}
-        score={score}
-        region={region}
-        difficulty={campaign.difficulty}
-        fps={fps}
-        pos={pos}
-        muted={muted}
-        onToggleMute={() => {
-          touchedMute.current = true;
-          setMuted((m) => !m);
-        }}
-        onSummary={onSummary}
-      />
+      {/* While a dialog is open the HUD is inert, so Tab stays inside the dialog. */}
+      <div inert={overlay !== null}>
+        <Hud
+          hp={campaign.hp}
+          score={score}
+          region={region}
+          difficulty={campaign.difficulty}
+          fps={fps}
+          pos={pos}
+          muted={muted}
+          onToggleMute={() => {
+            touchedMute.current = true;
+            setMuted((m) => !m);
+          }}
+          onSummary={onSummary}
+        />
+      </div>
       <AnimatePresence>
         {banner && !overlay && <RegionBanner key={banner.id} region={banner} />}
         {toast && !overlay && <Toast key={toast} text={toast} />}

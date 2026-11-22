@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Lightbulb, LogOut } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { ArrangeScene } from '../../scenes/ArrangeScene';
 import { StoryChart } from '../../scenes/DashboardScene';
@@ -73,8 +73,15 @@ export function BattleScreen({
   const [foeHp, setFoeHp] = useState(initialBattle.foeHp);
   const answeredIds = useRef(new Set<string>()); // guards double submits inside one render
   const reduced = useReducedMotion();
+  const command = useRef<HTMLElement>(null);
 
   const q = battle.queue[0];
+  // Keyboard players land on the first answer of every question (cards share .px-option).
+  useEffect(() => {
+    command.current
+      ?.querySelector<HTMLElement>('.px-option:not(:disabled)')
+      ?.focus();
+  }, [q.id]);
   const region = REGIONS.find((r) => r.id === chapter.id)!;
   const isBoss = battle.kind === 'boss';
   const foeName = isBoss
@@ -247,6 +254,7 @@ export function BattleScreen({
         <PixelWindow className="p-500">
           <motion.section
             key={q.id}
+            ref={command}
             initial={reduced ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.22, ease: EASE }}
