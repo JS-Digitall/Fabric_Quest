@@ -20,6 +20,9 @@ const MINI: Record<TileKind, string> = {
   tree: '#2f6b35',
   lava: '#d9481f',
   crystal: '#9b8cff',
+  roof: '#a5442f',
+  lamp: '#ffe08a',
+  fountain: '#5aa6f0',
 };
 
 /** A 2 px-per-tile overview of the world with the player as a blinking dot. */

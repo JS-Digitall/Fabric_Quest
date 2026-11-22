@@ -22,7 +22,10 @@ export type TileKind =
   | 'lava'
   | 'crystal'
   | 'bridge'
-  | 'flowers';
+  | 'flowers'
+  | 'roof'
+  | 'lamp'
+  | 'fountain';
 
 export const LEGEND: Record<string, TileKind> = {
   '.': 'grass',
@@ -37,12 +40,24 @@ export const LEGEND: Record<string, TileKind> = {
   '*': 'crystal',
   b: 'bridge',
   ',': 'flowers',
+  r: 'roof',
+  l: 'lamp',
+  f: 'fountain',
 };
 const CHAR = Object.fromEntries(
   Object.entries(LEGEND).map(([c, k]) => [k, c])
 ) as Record<TileKind, string>;
 
-export const SOLID: TileKind[] = ['water', 'wall', 'tree', 'lava', 'crystal'];
+export const SOLID: TileKind[] = [
+  'water',
+  'wall',
+  'tree',
+  'lava',
+  'crystal',
+  'roof',
+  'lamp',
+  'fountain',
+];
 
 export interface Rect {
   x: number;
@@ -206,17 +221,26 @@ function paint(): string[] {
   fill({ x: HUB.x - 1, y: HUB.y - 1, w: HUB.w + 2, h: HUB.h + 2 }, 'flowers');
   fill(HUB, 'stone');
   fill({ x: SPAWN.x - 2, y: SPAWN.y - 1, w: 4, h: 2 }, 'path');
-  // Four cottages with doorsteps, a pond and a few trees — kept clear of the centre paths.
+  // Four roofed cottages with doorsteps, a fountain, four lamps and a few trees —
+  // all kept clear of the centre paths.
   for (const [hx, hy] of [
     [HUB.x + 1, HUB.y + 1],
     [HUB.x + HUB.w - 5, HUB.y + 1],
     [HUB.x + 1, HUB.y + HUB.h - 4],
     [HUB.x + HUB.w - 5, HUB.y + HUB.h - 4],
   ]) {
-    fill({ x: hx, y: hy, w: 4, h: 2 }, 'wall');
+    fill({ x: hx, y: hy, w: 4, h: 1 }, 'roof');
+    fill({ x: hx, y: hy + 1, w: 4, h: 1 }, 'wall');
     set(hx + 1, hy + 2, 'path');
   }
-  fill({ x: HUB.x + 6, y: SPAWN.y - 1, w: 3, h: 2 }, 'water');
+  fill({ x: HUB.x + 6, y: SPAWN.y - 1, w: 2, h: 2 }, 'fountain');
+  for (const [lx, ly] of [
+    [SPAWN.x - 5, SPAWN.y - 3],
+    [SPAWN.x + 4, SPAWN.y - 3],
+    [SPAWN.x - 5, SPAWN.y + 3],
+    [SPAWN.x + 4, SPAWN.y + 3],
+  ])
+    set(lx, ly, 'lamp');
   fill({ x: HUB.x + HUB.w - 9, y: SPAWN.y - 1, w: 3, h: 2 }, 'flowers');
   for (const [tx, ty] of [
     [HUB.x + 6, HUB.y + 1],

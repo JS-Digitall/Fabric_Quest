@@ -79,6 +79,20 @@ describe('world map', () => {
     expect(snags).toEqual([]);
   });
 
+  it('decorates the hub with roofed cottages, a fountain and four lamps', () => {
+    const inHub = (kind: string) =>
+      MAP.flatMap((row, y) =>
+        [...row].flatMap((ch, x) =>
+          LEGEND[ch] === kind && inRect({ x, y }, HUB) ? [{ x, y }] : []
+        )
+      );
+    expect(inHub('lamp')).toHaveLength(4);
+    expect(inHub('fountain').length).toBeGreaterThanOrEqual(4);
+    expect(inHub('roof').length).toBeGreaterThanOrEqual(16);
+    for (const kind of ['lamp', 'fountain', 'roof'])
+      expect(walkable(inHub(kind)[0].x, inHub(kind)[0].y), kind).toBe(false);
+  });
+
   it('treats out-of-bounds as solid', () => {
     expect(walkable(-1, 0)).toBe(false);
     expect(walkable(0, 999)).toBe(false);

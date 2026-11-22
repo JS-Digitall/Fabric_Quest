@@ -17,7 +17,7 @@ import {
   type Spot,
 } from '../world';
 import type { Bus, UiCommand } from './bus';
-import { buildTextures, tileIndex } from './textures';
+import { ANIMATED, buildTextures, solidFrames, tileFrame } from './textures';
 
 export interface WorldInit {
   bus: Bus;
@@ -28,6 +28,8 @@ export interface WorldInit {
 }
 
 const SPEED = 88;
+// Effects and prompts draw above every y-sorted sprite.
+const TOP = 100000;
 const center = (t: number) => t * TILE + TILE / 2;
 
 type Dir = 'down' | 'up' | 'left' | 'right';
@@ -60,6 +62,12 @@ export class WorldScene extends Phaser.Scene {
   private npcs: { sprite: Phaser.GameObjects.Sprite; spot: Spot }[] = [];
   private sparks!: Phaser.GameObjects.Particles.ParticleEmitter;
   private prompt!: Phaser.GameObjects.Sprite;
+  /** Drop shadows that follow their sprite; depth is y-sorted every frame. */
+  private shadows: {
+    sprite: Phaser.GameObjects.Sprite;
+    img: Phaser.GameObjects.Image;
+    dy: number;
+  }[] = [];
   private promptBaseY = 0;
   private paused = false;
   /** Short grace period after a battle so the player can walk away. */
@@ -78,7 +86,9 @@ export class WorldScene extends Phaser.Scene {
     const { bus } = this.init_;
 
     // Tilemap from the generated world, with solid tiles colliding.
-    const data = MAP.map((row) => [...row].map((ch) => tileIndex(LEGEND[ch])));
+    const data = MAP.map((row, y) =>
+      [...row].map((ch, x) => tileFrame(LEGEND[ch], x, y))
+    );
     const map = this.make.tilemap({ data, tileWidth: TILE, tileHeight: TILE });
     const tileset = map.addTilesetImage('tiles', 'tiles', TILE, TILE, 0, 0)!;
     const layer = map.createLayer(
@@ -87,8 +97,15 @@ export class WorldScene extends Phaser.Scene {
       0,
       0
     ) as Phaser.Tilemaps.TilemapLayer;
-    map.setCollision(SOLID.map(tileIndex), true, true, layer);
+    map.setCollision(solidFrames(SOLID), true, true, layer);
     this.physics.world.setBounds(0, 0, W * TILE, H * TILE);
+    // Water, lava and the fountain shimmer by swapping between two frames.
+    if (!this.init_.reducedMotion)
+      this.time.addEvent({
+        delay: 650,
+        loop: true,
+        callback: () => ANIMATED.forEach(([a, b]) => layer.swapByIndex(a, b)),
+      });
 
     // Animations for every person sheet: down 0-1, up 2-3, side 4-5.
     const people = ['player', ...NPCS.map((n) => `npc-${n.region}`)];
@@ -120,6 +137,34 @@ export class WorldScene extends Phaser.Scene {
         });
     }
 
+    // The hub fountain: one 32 px sprite centred on its 2×2 block of solid tiles.
+    const fountainTiles = MAP.flatMap((row, y) =>
+      [...row].flatMap((ch, x) => (LEGEND[ch] === 'fountain' ? [{ x, y }] : []))
+    );
+    if (fountainTiles.length) {
+      const fx = Math.min(...fountainTiles.map((t) => t.x));
+      const fy = Math.min(...fountainTiles.map((t) => t.y));
+      const fountain = this.add.sprite(
+        fx * TILE + TILE,
+        fy * TILE + TILE,
+        'fountain',
+        0
+      );
+      fountain.setDepth(fy * TILE + TILE * 2);
+      if (!this.init_.reducedMotion) {
+        this.anims.create({
+          key: 'fountain',
+          frames: this.anims.generateFrameNumbers('fountain', {
+            start: 0,
+            end: 1,
+          }),
+          frameRate: 3,
+          repeat: -1,
+        });
+        fountain.play('fountain');
+      }
+    }
+
     // NPCs idle in place, chests sit closed or open.
     for (const spot of NPCS) {
       const sprite = this.add.sprite(
@@ -130,6 +175,7 @@ export class WorldScene extends Phaser.Scene {
       );
       sprite.play(`npc-${spot.region}-down`);
       this.npcs.push({ sprite, spot });
+      this.shadowUnder(sprite, 7);
     }
     for (const spot of CHESTS) {
       const open = this.init_.openedChests.includes(spot.id);
@@ -148,7 +194,8 @@ export class WorldScene extends Phaser.Scene {
       0
     );
     this.player.body!.setSize(10, 8).setOffset(3, 8);
-    this.player.setCollideWorldBounds(true).setDepth(10);
+    this.player.setCollideWorldBounds(true);
+    this.shadowUnder(this.player, 7);
     this.physics.add.collider(this.player, layer);
 
     // Creatures wander near their spot; bosses guard theirs.
@@ -161,7 +208,8 @@ export class WorldScene extends Phaser.Scene {
         `boss-${spot.region}`,
         0
       );
-      boss.setImmovable(true).play(`boss-${spot.region}`).setDepth(5);
+      boss.setImmovable(true).play(`boss-${spot.region}`);
+      this.shadowUnder(boss, 15, 2.2);
       boss.body!.setSize(24, 18).setOffset(4, 12);
       this.bosses.set(spot.region, boss);
       this.physics.add.collider(this.player, boss, () =>
@@ -176,11 +224,11 @@ export class WorldScene extends Phaser.Scene {
       tint: [0xffd23f, 0x2bc4ad, 0xffffff],
       emitting: false,
     });
-    this.sparks.setDepth(20);
+    this.sparks.setDepth(TOP);
 
     this.prompt = this.add
       .sprite(0, 0, 'prompt')
-      .setDepth(30)
+      .setDepth(TOP + 1)
       .setVisible(false);
     this.tweens.addCounter({
       from: 0,
@@ -231,6 +279,31 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  /** A soft oval shadow that follows `sprite`, `dy` px below its centre. */
+  private shadowUnder(
+    sprite: Phaser.GameObjects.Sprite,
+    dy: number,
+    scale = 1
+  ) {
+    const img = this.add.image(sprite.x, sprite.y + dy, 'shadow');
+    img.setScale(scale);
+    this.shadows.push({ sprite, img, dy });
+  }
+
+  /** Keep shadows under their sprites and draw lower sprites in front (y-sort). */
+  private syncShadows() {
+    this.shadows = this.shadows.filter(({ sprite, img, dy }) => {
+      if (!sprite.active) {
+        img.destroy();
+        return false;
+      }
+      img.setPosition(sprite.x, sprite.y + dy).setAlpha(sprite.alpha);
+      sprite.setDepth(sprite.y + dy);
+      img.setDepth(sprite.y + dy - 1);
+      return true;
+    });
+  }
+
   private spawnCreature(spot: Spot) {
     const sprite = this.physics.add.sprite(
       center(spot.x),
@@ -238,8 +311,9 @@ export class WorldScene extends Phaser.Scene {
       `creature-${spot.region}`,
       0
     );
-    sprite.play(`creature-${spot.region}`).setDepth(4);
+    sprite.play(`creature-${spot.region}`);
     sprite.body!.setSize(12, 10).setOffset(2, 5);
+    this.shadowUnder(sprite, 7);
     this.creatures.set(spot.id, { sprite, spot });
     this.physics.add.overlap(this.player, sprite, () =>
       this.touch(() =>
@@ -345,6 +419,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   override update() {
+    this.syncShadows();
     if (!this.player || this.paused) return;
     const k = this.keys;
     const left = k.left.isDown || k.a.isDown;
