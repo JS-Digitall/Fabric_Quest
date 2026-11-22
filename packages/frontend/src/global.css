@@ -284,8 +284,7 @@ body,
   }
 
   /* Night-window tokens: the shared quiz components re-skin through these. */
-  .px-ui,
-  .rpg-panel {
+  .px-ui {
     --color-background: #14213d;
     --color-foreground: #f4f1e8;
     --color-card: #1b2a4e;
@@ -314,8 +313,7 @@ body,
 
   /* Window frame: a 9×9 pixel border (stepped dark outline, cream double rule,
    dark inner line) sliced with border-image, so it stays crisp at any size. */
-  .px-window,
-  .rpg-panel {
+  .px-window {
     position: relative;
     border: 12px solid transparent;
     border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%230b1224' d='M1 0h7v1H1zM1 8h7v1H1zM0 1h1v7H0zM8 1h1v7H8z'/%3E%3Cpath fill='%23f4f1e8' d='M1 1h7v7H1z'/%3E%3Cpath fill='%230b1224' d='M1 1h1v1H1zM7 1h1v1H7zM1 7h1v1H1zM7 7h1v1H7zM3 3h3v3H3z'/%3E%3Cpath fill='%23d9d2bf' d='M2 6h5v1H2zM6 2h1v5H6z'/%3E%3C/svg%3E")
@@ -591,6 +589,35 @@ body,
       inset 0 0 0 2px var(--color-primary),
       inset 0 0 0 4px rgb(255 210 63 / 0.18);
     background: var(--color-accent);
+  }
+
+  /* Region banner: a pixel ribbon with notched tails in the region colour. */
+  .px-ribbon {
+    position: relative;
+    padding: 6px 40px 10px;
+    text-align: center;
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--tint) 85%, #fff),
+      var(--tint) 45%,
+      color-mix(in oklab, var(--tint) 70%, #000)
+    );
+    box-shadow:
+      0 0 0 3px #0b1224,
+      0 8px 0 0 rgb(0 0 0 / 0.35);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 50%, 100% 100%, 0 100%, 18px 50%);
+  }
+
+  /* Dialogue "more" marker. */
+  .px-advance {
+    display: inline-block;
+    font-size: 0.7em;
+    animation: px-blink 0.8s steps(1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .px-advance {
+      animation: none;
+    }
   }
 
   /* Battle stage: wipes in top-down in pixel steps, sky has a few fixed stars. */

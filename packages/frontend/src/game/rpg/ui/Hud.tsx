@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 
 import { MAX_HP } from '../campaign';
 import { H, LEGEND, MAP, REGIONS, W, type TileKind } from '../world';
+import { PixelBar, PixelButton, PixelChip, PixelWindow } from './kit';
 
 const MINI: Record<TileKind, string> = {
   grass: '#5fa84f',
@@ -35,7 +36,7 @@ function Minimap({ pos }: { pos: { x: number; y: number } }) {
   }, []);
   return (
     <div
-      className="relative overflow-hidden rounded-2xl border-2 border-white/20 shadow-lg"
+      className="relative overflow-hidden"
       style={{ width: W * 2, height: H * 2 }}
     >
       <canvas ref={ref} width={W * 2} height={H * 2} aria-hidden />
@@ -75,75 +76,77 @@ export function Hud({
       : (REGIONS.find((r) => r.id === region)?.name ?? 'The Wilds');
   const low = hp <= 40;
   return (
-    <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-400">
+    <div className="px-ui pointer-events-none absolute inset-0 flex flex-col justify-between p-400">
       <div className="flex items-start gap-400">
-        <div
+        <PixelWindow
           role="status"
           aria-label="Player status"
-          className="pointer-events-auto rounded-3xl bg-[#0d1424]/80 px-500 py-300 text-white shadow-lg backdrop-blur"
+          className="pointer-events-auto min-w-[260px] px-300 py-200"
         >
-          <p className="text-200 font-semibold uppercase tracking-[0.25em] text-white/60">
+          <p className="font-pixel text-200 uppercase tracking-[0.2em] text-muted-foreground">
             {difficulty} · {regionName}
           </p>
-          <div className="mt-200 flex items-center gap-300">
+          <div className="mt-100 flex items-center gap-300">
             <Heart
               className={cn(
-                'icon-size-300',
-                low ? 'animate-pulse text-[#ff7a5c]' : 'text-[#ff7aa8]'
+                'icon-size-300 shrink-0',
+                low ? 'text-[#ff7a5c]' : 'text-[#ff7aa8]'
               )}
               aria-hidden
             />
-            <span className="font-numeric text-400 font-bold">HP {hp}</span>
-            <span className="h-200 w-[120px] overflow-hidden rounded-full bg-white/15">
-              <span
-                className={cn(
-                  'block h-full rounded-full transition-[width] duration-500',
-                  low ? 'bg-[#ff7a5c]' : 'bg-[#3ccf7f]'
-                )}
-                style={{ width: `${(hp / MAX_HP) * 100}%` }}
+            <div className="flex-1">
+              <PixelBar
+                label="HP"
+                value={hp}
+                max={MAX_HP}
+                color={low ? '#ff7a5c' : '#4fe08f'}
               />
-            </span>
-            <span className="ml-200 font-numeric text-400 font-bold text-[#ffd23f]">
-              {score} pts
+            </div>
+            <span className="self-end font-pixel text-500 leading-500 text-[#ffd23f] [text-shadow:2px_2px_0_#0b1224]">
+              {score}
+              <span className="ml-100 text-200 text-muted-foreground">pts</span>
             </span>
           </div>
-        </div>
-        <div className="ml-auto flex items-start gap-300">
-          <button
-            type="button"
+        </PixelWindow>
+        <div className="pointer-events-auto ml-auto flex items-start gap-300">
+          <PixelButton
+            variant="ghost"
             onClick={onToggleMute}
             aria-label={muted ? 'Unmute sound' : 'Mute sound'}
-            className="pointer-events-auto grid size-[44px] place-items-center rounded-2xl bg-[#0d1424]/80 text-white shadow-lg backdrop-blur focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/60"
+            className="px-300"
           >
             {muted ? (
               <VolumeX className="icon-size-300" aria-hidden />
             ) : (
               <Volume2 className="icon-size-300" aria-hidden />
             )}
-          </button>
-          <button
-            type="button"
-            onClick={onSummary}
-            className="pointer-events-auto inline-flex h-[44px] items-center gap-200 rounded-2xl bg-[#0d1424]/80 px-400 font-semibold text-white shadow-lg backdrop-blur focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/60"
-          >
-            <Trophy className="icon-size-300 text-[#ffd23f]" aria-hidden />{' '}
-            Summary
-          </button>
+          </PixelButton>
+          <PixelButton onClick={onSummary}>
+            <Trophy className="icon-size-300" aria-hidden /> Summary
+          </PixelButton>
         </div>
       </div>
       <div className="flex items-end justify-between gap-400">
-        <p className="rounded-2xl bg-[#0d1424]/70 px-400 py-200 text-300 text-white/80 backdrop-blur">
-          WASD / arrows to walk · Space to talk or open
-        </p>
-        <div className="flex flex-col items-end gap-200">
-          <p
-            className="inline-flex items-center gap-200 rounded-full bg-[#0d1424]/80 px-300 py-100 font-numeric text-200 text-[#3ccf7f] backdrop-blur"
-            title="Live engine stats — this is a Fabric App"
-          >
-            <Gauge className="icon-size-200" aria-hidden />
-            {fps ? `${fps.fps} FPS · ${fps.entities} objects` : 'warming up…'}
+        <PixelWindow className="px-300 py-100">
+          <p className="font-pixel text-300 text-muted-foreground">
+            <span className="text-foreground">WASD</span> /{' '}
+            <span className="text-foreground">arrows</span> walk ·{' '}
+            <span className="text-foreground">Space</span> talk or open
           </p>
-          <Minimap pos={pos} />
+        </PixelWindow>
+        <div className="flex flex-col items-end gap-200">
+          <span
+            title="Live engine stats — this is a Fabric App"
+            className="px-ui"
+          >
+            <PixelChip>
+              <Gauge className="icon-size-200 text-[#4fe08f]" aria-hidden />
+              {fps ? `${fps.fps} FPS · ${fps.entities} objects` : 'warming up…'}
+            </PixelChip>
+          </span>
+          <PixelWindow className="p-0">
+            <Minimap pos={pos} />
+          </PixelWindow>
         </div>
       </div>
     </div>
