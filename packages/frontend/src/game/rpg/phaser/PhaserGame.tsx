@@ -12,15 +12,17 @@ export function PhaserGame({
   creatures,
   openedChests,
   defeatedBosses,
+  mode = 'play',
 }: {
   bus: Bus;
   creatures: Spot[];
   openedChests: string[];
   defeatedBosses: RegionId[];
+  mode?: 'play' | 'attract';
 }) {
   const host = useRef<HTMLDivElement>(null);
   // The world is built once per mount from the state at that moment; later changes arrive as bus commands.
-  const init = useRef({ creatures, openedChests, defeatedBosses });
+  const init = useRef({ creatures, openedChests, defeatedBosses, mode });
 
   useEffect(() => {
     const reducedMotion =

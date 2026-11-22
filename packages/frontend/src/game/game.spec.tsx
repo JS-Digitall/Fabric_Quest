@@ -1,19 +1,20 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-// Phaser needs a real canvas/WebGL; the world is replaced by a counting stub.
-const mounts = vi.hoisted(() => ({ mounted: 0, unmounted: 0 }));
+// Phaser needs a real canvas/WebGL; the world is replaced by a stub that
+// records which worlds are alive and in which mode.
+const live = vi.hoisted(() => ({ modes: [] as string[] }));
 vi.mock('./rpg/phaser/PhaserGame', async () => {
   const { useEffect } = await import('react');
   return {
-    PhaserGame: () => {
+    PhaserGame: ({ mode = 'play' }: { mode?: string }) => {
       useEffect(() => {
-        mounts.mounted++;
+        live.modes.push(mode);
         return () => {
-          mounts.unmounted++;
+          live.modes.splice(live.modes.indexOf(mode), 1);
         };
-      }, []);
-      return <div data-testid="phaser-world" />;
+      }, [mode]);
+      return <div data-testid="phaser-world" data-mode={mode} />;
     },
   };
 });
@@ -24,25 +25,38 @@ const click = (name: RegExp | string) =>
   fireEvent.click(screen.getByRole('button', { name }));
 
 describe('game flow', () => {
-  it('goes from title through difficulty into the world with a HUD', () => {
-    render(<GameApp />);
+  it('runs the world in attract mode behind the title', () => {
+    const { unmount } = render(<GameApp />);
+    expect(live.modes).toEqual(['attract']);
+    expect(
+      screen.getByRole('heading', { name: /fabric quest/i })
+    ).toBeInTheDocument();
+    unmount();
+    expect(live.modes).toEqual([]);
+  });
+
+  it('keeps one attract world through difficulty, then swaps in the real world', () => {
+    const { unmount } = render(<GameApp />);
     click(/start/i);
+    expect(live.modes).toEqual(['attract']);
     click(/beginner/i);
-    expect(screen.getByTestId('phaser-world')).toBeInTheDocument();
+    expect(live.modes).toEqual(['play']);
     expect(
       screen.getByRole('status', { name: /player status/i })
     ).toHaveTextContent(/HP/);
+    unmount();
   });
 
-  it('destroys the world when leaving it and builds exactly one on return', () => {
-    render(<GameApp />);
+  it('never runs two worlds when visiting the summary and coming back', () => {
+    const { unmount } = render(<GameApp />);
     click(/start/i);
     click(/beginner/i);
-    const before = { ...mounts };
     click(/summary/i);
-    expect(mounts.unmounted).toBe(before.unmounted + 1);
-    click(/back to the world/i);
-    expect(mounts.mounted).toBe(before.mounted + 1);
+    expect(live.modes).toEqual(['attract']);
     expect(screen.getAllByTestId('phaser-world')).toHaveLength(1);
+    click(/back to the world/i);
+    expect(live.modes).toEqual(['play']);
+    expect(screen.getAllByTestId('phaser-world')).toHaveLength(1);
+    unmount();
   });
 });

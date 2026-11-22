@@ -1,32 +1,46 @@
-import { motion } from 'framer-motion';
-import { Map as MapIcon, Play } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect } from 'react';
 
-import { cn } from '@/lib/utils';
-
-import { Art } from '../art';
+import { NPC_PALETTES, PLAYER_PALETTE } from '../rpg/phaser/textures';
+import { PixelBar, PixelButton, PixelChip, PixelWindow } from '../rpg/ui/kit';
+import { PersonSprite } from '../rpg/ui/Sprite';
+import { REGIONS } from '../rpg/world';
 import type {
   Chapter,
   ChapterResult as Result,
   Difficulty,
   GameState,
 } from '../types';
-import { Button } from '../ui';
 
-const DIFFICULTIES: { id: Difficulty; name: string; blurb: string }[] = [
+const EASE = [0.23, 1, 0.32, 1] as const;
+
+const DIFFICULTIES: {
+  id: Difficulty;
+  name: string;
+  blurb: string;
+  stars: number;
+  palette: typeof PLAYER_PALETTE;
+}[] = [
   {
     id: 'beginner',
     name: 'Beginner',
     blurb: 'New to Fabric or data tools. Hints available.',
+    stars: 1,
+    palette: NPC_PALETTES.onelake,
   },
   {
     id: 'practitioner',
     name: 'Practitioner',
     blurb: 'You build reports or pipelines. Real trade-offs.',
+    stars: 2,
+    palette: PLAYER_PALETTE,
   },
   {
     id: 'expert',
     name: 'Expert',
     blurb: 'You run Fabric. Edge cases and hard limits.',
+    stars: 3,
+    palette: NPC_PALETTES.governance,
   },
 ];
 
@@ -34,32 +48,51 @@ const percent = (r: Result) =>
   r.max === 0 ? 0 : Math.round((r.score / r.max) * 100);
 
 export function TitleScreen({ onStart }: { onStart: () => void }) {
+  const reduced = useReducedMotion();
+  // Classic "press start": Enter begins the quest from anywhere on the title.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !(e.target instanceof HTMLButtonElement))
+        onStart();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onStart]);
+
   return (
-    <div className="mx-auto grid min-h-[80vh] max-w-5xl items-center gap-800 md:grid-cols-[1.1fr_1fr]">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
-          A Fabric App adventure
-        </p>
-        <h1 className="mt-300 font-heading text-hero-1000 font-black leading-[0.95] tracking-tight">
+    <motion.div
+      className="flex w-full max-w-3xl flex-col items-center text-center"
+      initial={reduced ? false : { opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: EASE }}
+    >
+      <PixelChip tone="gold">A Fabric App adventure</PixelChip>
+      <PixelWindow className="mt-400 w-full px-600 py-500">
+        <h1 className="font-pixel text-[clamp(44px,9vw,96px)] leading-[1] text-[#ffd23f] [text-shadow:4px_4px_0_#a8320a,8px_8px_0_#0b1224]">
           Fabric Quest
         </h1>
-        <p className="mt-500 max-w-md text-500 leading-500 text-muted-foreground">
-          You are the new data lead at Aurora Outfitters. Explore the world of
+        <p className="mx-auto mt-400 max-w-xl text-500 leading-500 text-foreground/90">
+          You are the new data lead at Aurora Outfitters. Explore the realm of
           Fabric, meet its keepers and tame the Data Chaos — one question at a
           time.
         </p>
-        <Button className="mt-700 px-700 py-400 text-500" onClick={onStart}>
-          <Play className="icon-size-400" aria-hidden /> Start the quest
-        </Button>
-        <p className="mt-400 text-300 text-muted-foreground">
-          Arrow keys or WASD to walk · Space to talk and open chests
+        <PixelButton
+          className="mt-600 px-700 py-300 text-500"
+          onClick={onStart}
+        >
+          <span className="px-advance" aria-hidden>
+            ▶
+          </span>
+          Start the quest
+        </PixelButton>
+        <p className="mt-300 font-pixel text-300 text-muted-foreground">
+          Press <span className="text-foreground">Enter</span> to begin
         </p>
-      </motion.div>
-      <Art id="title" className="w-full" />
-    </div>
+      </PixelWindow>
+      <p className="mt-400 font-pixel text-300 text-[#f4f1e8]/70">
+        WASD / arrows walk · Space talks and opens chests
+      </p>
+    </motion.div>
   );
 }
 
@@ -68,43 +101,64 @@ export function DifficultyScreen({
 }: {
   onPick: (d: Difficulty) => void;
 }) {
+  const reduced = useReducedMotion();
   return (
-    <div className="mx-auto max-w-4xl py-700">
-      <h1 className="font-heading text-hero-900 font-black leading-hero-900">
-        How well do you know your data?
-      </h1>
-      <p className="mt-300 text-500 text-muted-foreground">
-        Pick a level. Changing it later restarts the campaign.
-      </p>
-      <div className="mt-700 grid gap-500 md:grid-cols-3">
+    <div className="w-full max-w-5xl">
+      <div className="text-center">
+        <PixelChip tone="gold">Choose your save slot</PixelChip>
+        <h1 className="mt-300 font-pixel text-hero-900 leading-hero-900 text-[#f4f1e8] [text-shadow:3px_3px_0_#0b1224]">
+          How well do you know your data?
+        </h1>
+        <p className="mt-200 text-400 text-[#f4f1e8]/80">
+          Changing it later restarts the campaign.
+        </p>
+      </div>
+      <div className="mt-600 grid gap-500 md:grid-cols-3">
         {DIFFICULTIES.map((d, i) => (
           <motion.button
             key={d.id}
             type="button"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
-            whileHover={{ y: -6 }}
             onClick={() => onPick(d.id)}
-            className="group rounded-4xl border-2 border-border bg-card p-600 text-left shadow-sm transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40"
+            initial={reduced ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: EASE, delay: i * 0.06 }}
+            className="px-slot group text-left"
           >
-            <span className="flex gap-100" aria-hidden>
-              {[0, 1, 2].map((n) => (
+            <PixelWindow className="h-full p-400">
+              <div className="flex items-center justify-between">
+                <span className="font-pixel text-200 uppercase tracking-widest text-muted-foreground">
+                  Slot {i + 1}
+                </span>
                 <span
-                  key={n}
-                  className={cn(
-                    'h-300 w-700 rounded-full',
-                    n <= i ? 'bg-primary' : 'bg-muted'
-                  )}
-                />
-              ))}
-            </span>
-            <span className="mt-500 block font-heading text-hero-700 font-bold">
-              {d.name}
-            </span>
-            <span className="mt-200 block text-400 text-muted-foreground">
-              {d.blurb}
-            </span>
+                  className="font-pixel text-400 text-[#ffd23f]"
+                  aria-label={`${d.stars} of 3 stars`}
+                >
+                  {'★'.repeat(d.stars)}
+                  <span className="text-muted-foreground">
+                    {'★'.repeat(3 - d.stars)}
+                  </span>
+                </span>
+              </div>
+              <div className="mt-300 flex items-center gap-400">
+                <div className="px-inset grid size-[88px] shrink-0 place-items-center">
+                  <PersonSprite palette={d.palette} label="" scale={4} />
+                </div>
+                <div>
+                  <span className="block font-pixel text-hero-700 leading-hero-700 text-foreground">
+                    {d.name}
+                  </span>
+                  <span className="mt-100 block font-pixel text-200 uppercase tracking-wider text-muted-foreground">
+                    New game · Lv 1
+                  </span>
+                </div>
+              </div>
+              <span className="mt-300 block text-300 leading-300 text-foreground/85">
+                {d.blurb}
+              </span>
+              <span className="px-slot-cta mt-400 inline-block font-pixel text-300 text-[#ffd23f]">
+                ▶ Begin
+              </span>
+            </PixelWindow>
           </motion.button>
         ))}
       </div>
@@ -135,49 +189,60 @@ export function SummaryScreen({
           : 'Fabric Rookie';
 
   return (
-    <div className="mx-auto max-w-3xl py-700">
-      <p className="font-heading text-300 font-bold uppercase tracking-[0.3em] text-primary">
-        Your rank so far
+    <PixelWindow className="w-full max-w-3xl p-600">
+      <div className="flex flex-wrap items-end gap-400">
+        <div className="flex-1">
+          <PixelChip tone="gold">Quest log</PixelChip>
+          <h1 className="mt-300 font-pixel text-hero-900 leading-hero-900 text-[#ffd23f] [text-shadow:3px_3px_0_#0b1224]">
+            {rank}
+          </h1>
+        </div>
+        <p className="font-pixel text-400 text-muted-foreground">
+          <span className="text-hero-800 text-foreground">{score}</span> / {max}
+          <span className="ml-200 text-200 uppercase">{game.difficulty}</span>
+        </p>
+      </div>
+      <p className="mt-200 text-400 text-foreground/80">
+        {played.length} of {chapters.length} regions explored
       </p>
-      <h1 className="mt-200 font-heading text-hero-1000 font-black leading-[1]">
-        {rank}
-      </h1>
-      <p className="mt-300 text-500 text-muted-foreground">
-        {score} of {max} points across {played.length} of {chapters.length}{' '}
-        regions · {game.difficulty}
-      </p>
-      <ul aria-label="Explored regions" className="mt-700 grid gap-300">
-        {played.map((c, i) => {
-          const r = game.results[c.id]!;
+      <ul aria-label="Explored regions" className="mt-500 grid gap-300">
+        {chapters.map((c) => {
+          const r = game.results[c.id];
+          const region = REGIONS.find((rg) => rg.id === c.id)!;
+          const explored = (r?.max ?? 0) > 0;
           return (
-            <motion.li
-              key={c.id}
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.06 }}
-              className="flex items-center gap-400 rounded-3xl bg-card p-400 shadow-sm"
-            >
-              <span className="flex-1 font-heading text-400 font-bold">
-                {c.title}
+            <li key={c.id} className="px-inset flex items-center gap-400 p-300">
+              <span
+                className="size-[14px] shrink-0"
+                style={{
+                  background: explored ? region.tint : 'transparent',
+                  boxShadow: `inset 0 0 0 2px ${region.tint}`,
+                }}
+                aria-hidden
+              />
+              <span className="w-[38%] font-pixel text-300 leading-300 text-foreground">
+                {region.name}
               </span>
-              <span className="h-300 w-[30%] overflow-hidden rounded-full bg-muted">
-                <motion.span
-                  className="block h-full rounded-full bg-primary"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${percent(r)}%` }}
-                  transition={{ delay: 0.2 + i * 0.06 }}
+              <div className="flex-1">
+                <PixelBar
+                  label={c.title}
+                  value={explored ? percent(r!) : 0}
+                  max={100}
+                  color={region.tint}
+                  showValue={false}
+                  showLabel={false}
                 />
+              </div>
+              <span className="w-[3.5rem] text-right font-pixel text-400 text-foreground">
+                {explored ? `${percent(r!)}%` : '—'}
               </span>
-              <span className="w-[4.5rem] text-right font-numeric text-400 font-bold">
-                {percent(r)}%
-              </span>
-            </motion.li>
+            </li>
           );
         })}
       </ul>
-      <Button className="mt-700" onClick={onBack}>
-        <MapIcon className="icon-size-300" aria-hidden /> Back to the world
-      </Button>
-    </div>
+      <PixelButton className="mt-600" onClick={onBack}>
+        <span aria-hidden>◀</span> Back to the world
+      </PixelButton>
+    </PixelWindow>
   );
 }

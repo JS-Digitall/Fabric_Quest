@@ -231,47 +231,6 @@ body,
   height: 100%;
 }
 
-/* Game backdrop: warm paper with a faint survey grid and two soft glows. */
-.game-backdrop {
-  background:
-    radial-gradient(
-      60rem 30rem at 85% -10%,
-      color-mix(in oklab, var(--color-primary) 14%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      40rem 24rem at -10% 110%,
-      color-mix(in oklab, var(--color-art-2) 14%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-        circle at 1px 1px,
-        color-mix(in oklab, var(--color-foreground) 9%, transparent) 1px,
-        transparent 0
-      )
-      0 0 / 28px 28px,
-    var(--color-background);
-}
-
-/* Flowing "data stream" strokes in the illustrations. */
-.art-flow {
-  stroke-dasharray: 6 10;
-  animation: art-flow 1.4s linear infinite;
-}
-@keyframes art-flow {
-  to {
-    stroke-dashoffset: -32;
-  }
-}
-.art-still .art-flow {
-  animation: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .art-flow {
-    animation: none;
-  }
-}
-
 @layer components {
   /* ------------------------------------------------------------------
  * Pixel UI kit (.px-*). Every game window, button, bar and menu uses it.
@@ -623,6 +582,41 @@ body,
   /* Battle stage: wipes in top-down in pixel steps, sky has a few fixed stars. */
   .px-stage-enter {
     animation: px-wipe 260ms steps(8, end) both;
+  }
+
+  /* Menus over the attract world: darken the edges so windows read clearly. */
+  .px-backdrop {
+    background:
+      radial-gradient(ellipse at 50% 45%, rgb(7 12 24 / 0.1), rgb(7 12 24 / 0.72) 85%),
+      linear-gradient(180deg, rgb(7 12 24 / 0.2), rgb(7 12 24 / 0.6));
+  }
+
+  /* Save slots: lift and gold-frame on hover/focus; press in. */
+  .px-slot {
+    display: block;
+    transition: transform 160ms var(--ease-ui);
+  }
+  .px-slot:focus-visible {
+    outline: 3px solid #ffd23f;
+    outline-offset: 4px;
+  }
+  .px-slot:active {
+    transform: translateY(1px) scale(0.99);
+  }
+  .px-slot-cta {
+    opacity: 0.5;
+    transition: opacity 160ms ease;
+  }
+  .px-slot:focus-visible .px-slot-cta {
+    opacity: 1;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .px-slot:hover {
+      transform: translateY(-4px);
+    }
+    .px-slot:hover .px-slot-cta {
+      opacity: 1;
+    }
   }
   .px-stage-stars {
     background-image:

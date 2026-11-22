@@ -26,6 +26,8 @@ export interface WorldInit {
   openedChests: string[];
   defeatedBosses: RegionId[];
   reducedMotion: boolean;
+  /** 'attract' = the title-screen fly-over: no player, no input, the camera tours. */
+  mode?: 'play' | 'attract';
 }
 
 const SPEED = 88;
@@ -253,6 +255,7 @@ export class WorldScene extends Phaser.Scene {
     cam.startFollow(this.player, true, 0.15, 0.15);
     cam.setRoundPixels(true);
     this.atmosphere();
+    if (this.init_.mode === 'attract') this.startAttract();
 
     const kb = this.input.keyboard!;
     const K = Phaser.Input.Keyboard.KeyCodes;
@@ -418,6 +421,38 @@ export class WorldScene extends Phaser.Scene {
       emitter.setDepth(TOP - 2);
       this.ambience.set(r.id, emitter);
     }
+  }
+
+  /** Title-screen fly-over: hide the player and let the camera tour the regions. */
+  private startAttract() {
+    this.player.setVisible(false);
+    this.player.body!.enable = false;
+    const cam = this.cameras.main;
+    cam.stopFollow();
+    cam.setZoom(2.5);
+    const stops: { x: number; y: number; region: RegionId | 'hub' }[] = [
+      { x: center(SPAWN.x), y: center(SPAWN.y), region: 'hub' },
+      ...REGIONS.map((r) => ({
+        x: center(r.rect.x + r.rect.w / 2),
+        y: center(r.rect.y + r.rect.h / 2),
+        region: r.id,
+      })),
+    ];
+    cam.centerOn(stops[0].x, stops[0].y);
+    this.setMood('hub');
+    if (this.init_.reducedMotion) return;
+    let i = 0;
+    const next = () => {
+      i = (i + 1) % stops.length;
+      const stop = stops[i];
+      cam.pan(stop.x, stop.y, 7000, 'Sine.easeInOut', false, (_c, progress) => {
+        if (progress === 1) {
+          this.setMood(stop.region);
+          this.time.delayedCall(1800, next);
+        }
+      });
+    };
+    this.time.delayedCall(1500, next);
   }
 
   /** Switch the region's particles on and nudge the colour grade. */
@@ -593,7 +628,7 @@ export class WorldScene extends Phaser.Scene {
 
   override update() {
     this.syncShadows();
-    if (!this.player || this.paused) return;
+    if (!this.player || this.paused || this.init_.mode === 'attract') return;
     const k = this.keys;
     const left = k.left.isDown || k.a.isDown;
     const right = k.right.isDown || k.d.isDown;

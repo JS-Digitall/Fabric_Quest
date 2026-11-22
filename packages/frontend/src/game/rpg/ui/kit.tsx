@@ -70,6 +70,7 @@ export function PixelBar({
   color,
   segments = 10,
   showValue = true,
+  showLabel = true,
 }: {
   label: string;
   value: number;
@@ -77,12 +78,19 @@ export function PixelBar({
   color: string;
   segments?: number;
   showValue?: boolean;
+  /** When false the label is only announced to assistive tech. */
+  showLabel?: boolean;
 }) {
   const filled = max > 0 ? Math.ceil((Math.max(0, value) / max) * segments) : 0;
   return (
     <div className="w-full">
-      <div className="flex items-baseline justify-between font-pixel text-200 uppercase tracking-wider text-muted-foreground">
-        <span>{label}</span>
+      <div
+        className={cn(
+          'flex items-baseline justify-between font-pixel text-200 uppercase tracking-wider text-muted-foreground',
+          !showLabel && !showValue && 'hidden'
+        )}
+      >
+        <span className={cn(!showLabel && 'sr-only')}>{label}</span>
         {showValue && (
           <span className="tabular-nums text-foreground">
             {value}/{max}

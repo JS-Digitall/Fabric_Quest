@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { chapters } from './content';
+import { AttractWorld } from './rpg/ui/AttractWorld';
 import { WorldView } from './rpg/ui/WorldView';
 import { DifficultyScreen, SummaryScreen, TitleScreen } from './screens/menus';
 import { useGame, type ScreenName } from './useGame';
@@ -8,7 +9,21 @@ import { useGame, type ScreenName } from './useGame';
 export function GameApp() {
   const [game, dispatch] = useGame();
   const go = (screen: ScreenName) => dispatch({ type: 'go', screen });
-  const inWorld = game.screen === 'world' && game.campaign !== null;
+
+  if (game.screen === 'world' && game.campaign)
+    return (
+      <main className="fixed inset-0 overflow-hidden bg-background text-foreground">
+        <WorldView
+          campaign={game.campaign}
+          onCampaign={(campaign) => dispatch({ type: 'campaign', campaign })}
+          onResult={(chapter, r) =>
+            dispatch({ type: 'finish', chapter, score: r.score, max: r.max })
+          }
+          onSummary={() => go('summary')}
+          onChangeDifficulty={() => go('difficulty')}
+        />
+      </main>
+    );
 
   let view;
   if (game.screen === 'title')
@@ -21,18 +36,6 @@ export function GameApp() {
         onBack={() => go('world')}
       />
     );
-  else if (inWorld)
-    view = (
-      <WorldView
-        campaign={game.campaign!}
-        onCampaign={(campaign) => dispatch({ type: 'campaign', campaign })}
-        onResult={(chapter, r) =>
-          dispatch({ type: 'finish', chapter, score: r.score, max: r.max })
-        }
-        onSummary={() => go('summary')}
-        onChangeDifficulty={() => go('difficulty')}
-      />
-    );
   else
     view = (
       <DifficultyScreen
@@ -40,26 +43,25 @@ export function GameApp() {
       />
     );
 
+  // Menus float over the live world in attract mode (one Phaser instance at a time).
   return (
-    <main
-      className={
-        inWorld
-          ? 'fixed inset-0 overflow-hidden bg-background text-foreground'
-          : 'game-backdrop min-h-screen px-500 py-600 text-foreground md:px-800'
-      }
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={game.screen}
-          className={inWorld ? 'h-full w-full' : undefined}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {view}
-        </motion.div>
-      </AnimatePresence>
+    <main className="px-ui fixed inset-0 overflow-hidden bg-[#070c18]">
+      <AttractWorld />
+      <div className="px-backdrop pointer-events-none absolute inset-0" />
+      <div className="relative h-full overflow-y-auto px-500 py-600">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={game.screen}
+            className="flex min-h-full items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.12 } }}
+            transition={{ duration: 0.2 }}
+          >
+            {view}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </main>
   );
 }
