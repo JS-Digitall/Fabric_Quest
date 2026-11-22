@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -57,19 +56,24 @@ export function MatchScene({
     const right =
       locked && at >= 0 && correct.get(pairs[at][0]) === pairs[at][1];
     return (
-      <motion.button
-        layout
+      <button
         type="button"
         key={v}
         disabled={locked || (side === 1 && !selected)}
         onClick={() => (side === 0 ? pickLeft(v) : pickRight(v))}
         aria-pressed={isSelected}
-        // Pair colour as a frame plus a left bar; once locked, right/wrong colours take over.
-        style={
-          hue && !locked
-            ? { boxShadow: `inset 0 0 0 2px ${hue}, inset 8px 0 0 ${hue}` }
-            : undefined
-        }
+        // Pair colour as a frame plus a left bar; once locked, right/wrong colours take
+        // over. A plain button: motion.button kept stale inline styles after locking.
+        style={{
+          boxShadow:
+            locked && at >= 0
+              ? `inset 0 0 0 2px var(${right ? '--color-success' : '--color-destructive'})`
+              : hue
+                ? `inset 0 0 0 2px ${hue}, inset 8px 0 0 ${hue}`
+                : isSelected
+                  ? 'inset 0 0 0 2px var(--color-primary), inset 0 0 0 4px rgb(255 210 63 / 0.18)'
+                  : 'inset 0 0 0 2px var(--color-border)',
+        }}
         data-state={locked && at >= 0 ? (right ? 'right' : 'wrong') : undefined}
         className={cn(
           'px-option block py-200 text-300',
@@ -84,7 +88,7 @@ export function MatchScene({
             → {correct.get(v)}
           </span>
         )}
-      </motion.button>
+      </button>
     );
   };
 

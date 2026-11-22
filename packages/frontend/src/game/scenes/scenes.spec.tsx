@@ -63,6 +63,22 @@ describe('MatchScene', () => {
       screen.getByRole('button', { name: new RegExp(`^${name}`) })
     );
 
+  it('recolours pairs green or red after checking, replacing the pair colour', () => {
+    render(<Harness />);
+    pick('L1');
+    pick('R2');
+    pick('L2');
+    pick('R1');
+    pick('L3');
+    pick('R3');
+    fireEvent.click(screen.getByRole('button', { name: /check/i }));
+    const chip = (name: string) =>
+      screen.getByRole('button', { name: new RegExp(`^${name}`) });
+    expect(chip('L1').style.boxShadow).toContain('--color-destructive');
+    expect(chip('L3').style.boxShadow).toContain('--color-success');
+    expect(chip('L1').style.boxShadow).not.toContain('--color-pair');
+  });
+
   it('reveals the correct partner for each wrong pair after checking', () => {
     render(<Harness />);
     pick('L1');

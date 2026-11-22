@@ -162,8 +162,8 @@ export function ChestCard({
             {chapter.tagline}
           </p>
           <p className="mt-400 inline-flex items-center gap-200 font-pixel text-400 text-success">
-            <Heart className="icon-size-300" aria-hidden /> +{healed} HP
-            restored
+            <Heart className="icon-size-300" aria-hidden />{' '}
+            {healed > 0 ? `+${healed} HP restored` : 'HP already full'}
           </p>
           <div className="mt-500 flex items-center gap-400">
             {source.startsWith('https://') && (
