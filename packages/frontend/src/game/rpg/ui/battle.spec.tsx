@@ -69,6 +69,39 @@ describe('BattleScreen', () => {
     );
   });
 
+  it('can be fought with the keyboard alone and reports the damage', () => {
+    const c = newCampaign('beginner');
+    render(
+      <BattleScreen
+        chapter={chapter}
+        campaign={c}
+        battle={startCreatureBattle(c, chapter, 'x1')!}
+        onEnd={vi.fn()}
+      />
+    );
+    const first = screen.getByRole('button', { name: 'Wrong' });
+    first.focus();
+    fireEvent.keyDown(first, { key: 'ArrowDown' });
+    expect(screen.getByRole('button', { name: 'Right' })).toHaveFocus();
+    // Enter on a focused native button activates it.
+    fireEvent.click(document.activeElement!);
+    expect(screen.getByText(/takes 100 damage/i)).toBeInTheDocument();
+  });
+
+  it('says the foe dodges when the answer misses', () => {
+    const c = newCampaign('beginner');
+    render(
+      <BattleScreen
+        chapter={chapter}
+        campaign={c}
+        battle={startCreatureBattle(c, chapter, 'x1')!}
+        onEnd={vi.fn()}
+      />
+    );
+    click('Wrong');
+    expect(screen.getByText(/dodges/i)).toBeInTheDocument();
+  });
+
   it('scores a double-clicked answer only once', () => {
     const c = newCampaign('beginner');
     const onEnd = vi.fn();

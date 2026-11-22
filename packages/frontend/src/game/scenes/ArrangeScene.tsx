@@ -5,7 +5,7 @@ import { useState, type KeyboardEvent } from 'react';
 import { cn } from '@/lib/utils';
 
 import type { Answer, ArrangeScene as Scene } from '../types';
-import { Button } from '../ui';
+import { PixelButton } from '../rpg/ui/kit';
 import { shuffled } from './shuffle';
 
 export function ArrangeScene({
@@ -46,7 +46,7 @@ export function ArrangeScene({
         axis="y"
         values={order}
         onReorder={locked ? () => {} : setOrder}
-        className="grid gap-300"
+        className="grid gap-200"
       >
         {order.map((item, i) => {
           const right = locked && scene.items[i] === item;
@@ -59,18 +59,13 @@ export function ArrangeScene({
               tabIndex={0}
               aria-label={`${i + 1}. ${item}`}
               onKeyDown={(e: KeyboardEvent<HTMLLIElement>) => onKey(e, i)}
+              data-state={locked ? (right ? 'right' : 'wrong') : undefined}
               className={cn(
-                'flex cursor-grab items-center gap-300 rounded-2xl border-2 border-border bg-card px-400 py-400 text-400 font-medium shadow-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 active:cursor-grabbing',
-                locked &&
-                  (right
-                    ? 'border-success bg-success/10'
-                    : 'border-destructive bg-destructive/10')
+                'px-option',
+                !locked && 'cursor-grab active:cursor-grabbing'
               )}
             >
-              <span
-                aria-hidden
-                className="grid size-800 shrink-0 place-items-center rounded-xl bg-primary font-heading text-300 font-bold text-primary-foreground"
-              >
+              <span aria-hidden className="px-option-key">
                 {i + 1}
               </span>
               <span className="flex-1">{item}</span>
@@ -83,12 +78,12 @@ export function ArrangeScene({
         })}
       </Reorder.Group>
       {!locked && (
-        <Button
-          className="mt-500"
+        <PixelButton
+          className="mt-400"
           onClick={() => onSubmit({ kind: 'order', items: order })}
         >
           Lock in order
-        </Button>
+        </PixelButton>
       )}
     </div>
   );

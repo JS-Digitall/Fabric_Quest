@@ -5,6 +5,7 @@ import {
 } from '@microsoft/fabric-visuals';
 import type { DataTable } from '@microsoft/fabric-visuals-core';
 
+import { PixelChip } from '../rpg/ui/kit';
 import type { ChartData } from '../types';
 
 export function StoryChart({ chart }: { chart: ChartData }) {
@@ -28,13 +29,11 @@ export function StoryChart({ chart }: { chart: ChartData }) {
   };
 
   return (
-    <figure className="mt-500 rounded-3xl border-2 border-border bg-card p-400">
+    <figure className="px-inset mt-400 p-300">
       {/* Own title: the visual's built-in header keeps a fixed light-theme text colour. */}
       <figcaption className="mb-200 flex flex-wrap items-center gap-300">
-        <span className="font-heading text-400 font-bold">{chart.title}</span>
-        <span className="rounded-full bg-muted px-300 py-100 text-200 font-semibold uppercase tracking-wide text-muted-foreground">
-          Fictional story data
-        </span>
+        <span className="font-pixel text-400">{chart.title}</span>
+        <PixelChip>Fictional story data</PixelChip>
       </figcaption>
       <VegaVisual
         spec={spec}

@@ -62,14 +62,14 @@ export function FoeSprite({
   return kind === 'boss' ? (
     <PixelCanvas
       size={32}
-      scale={6}
+      scale={4}
       label={label}
       draw={(c, f) => drawBoss(c, 0, color, f)}
     />
   ) : (
     <PixelCanvas
       size={16}
-      scale={9}
+      scale={6}
       label={label}
       draw={(c, f) => drawCreature(c, 0, color, f)}
     />

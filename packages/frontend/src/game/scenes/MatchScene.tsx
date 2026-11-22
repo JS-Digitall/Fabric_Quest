@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 import type { Answer, MatchScene as Scene } from '../types';
-import { Button } from '../ui';
+import { PixelButton } from '../rpg/ui/kit';
 import { shuffled } from './shuffle';
 
 // Pair colours: each made pair gets its own hue so the link is visible without lines.
@@ -64,17 +64,17 @@ export function MatchScene({
         disabled={locked || (side === 1 && !selected)}
         onClick={() => (side === 0 ? pickLeft(v) : pickRight(v))}
         aria-pressed={isSelected}
+        // Pair colour as a frame plus a left bar; once locked, right/wrong colours take over.
         style={
-          hue
-            ? { borderColor: hue, boxShadow: `inset 6px 0 0 ${hue}` }
+          hue && !locked
+            ? { boxShadow: `inset 0 0 0 2px ${hue}, inset 8px 0 0 ${hue}` }
             : undefined
         }
+        data-state={locked && at >= 0 ? (right ? 'right' : 'wrong') : undefined}
         className={cn(
-          'w-full rounded-2xl border-2 border-border bg-card px-400 py-300 text-left text-300 font-medium leading-300 transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 disabled:cursor-default',
-          side === 0 && 'font-heading text-400 font-bold',
-          isSelected && 'border-primary bg-primary/10',
-          side === 1 && selected && at < 0 && 'hover:border-primary',
-          locked && at >= 0 && (right ? 'bg-success/10' : 'bg-destructive/10')
+          'px-option block py-200 text-300',
+          side === 0 && 'font-semibold',
+          isSelected && 'px-option-selected'
         )}
       >
         {v}
@@ -93,22 +93,22 @@ export function MatchScene({
       <p className="mb-300 text-300 text-muted-foreground">
         Pick a term on the left, then its partner on the right.
       </p>
-      <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-600 gap-y-300">
-        <div className="grid content-start gap-300">
+      <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-400 gap-y-200">
+        <div className="grid content-start gap-200">
           {lefts.map((l) => chip(0, l))}
         </div>
-        <div className="grid content-start gap-300">
+        <div className="grid content-start gap-200">
           {rights.map((r) => chip(1, r))}
         </div>
       </div>
       {!locked && (
-        <Button
-          className="mt-500"
+        <PixelButton
+          className="mt-400"
           disabled={pairs.length < scene.pairs.length}
           onClick={() => onSubmit({ kind: 'pairs', pairs })}
         >
           Check matches
-        </Button>
+        </PixelButton>
       )}
     </div>
   );

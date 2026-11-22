@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, ExternalLink, XCircle } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ExternalLink } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
-import { Button } from '../ui';
+import { PixelButton } from '../rpg/ui/kit';
 
 function sourceLink(source: string) {
   if (source.startsWith('https://')) return source;
@@ -10,13 +10,17 @@ function sourceLink(source: string) {
   return null;
 }
 
+/** The battle message box shown after an answer. */
 export function Feedback({
+  message,
   correct,
   points,
   explanation,
   source,
   onContinue,
 }: {
+  /** The JRPG line, e.g. "Silo Slime takes 100 damage!". */
+  message?: string;
   /** The answer itself was right; points may still be halved by a hint. */
   correct: boolean;
   points: number;
@@ -24,36 +28,42 @@ export function Feedback({
   source: string;
   onContinue: () => void;
 }) {
-  const good = correct;
   const partial = !correct && points > 0;
   const href = sourceLink(source);
   const next = useRef<HTMLButtonElement>(null);
+  const reduced = useReducedMotion();
   useEffect(() => next.current?.focus(), []);
+
+  const verdict = correct ? 'Spot on!' : partial ? 'Partly right' : 'Not quite';
+  const tone = correct
+    ? 'text-success'
+    : partial
+      ? 'text-warning'
+      : 'text-destructive';
 
   return (
     <motion.section
       role="status"
-      initial={{ opacity: 0, y: 16 }}
+      initial={reduced ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mt-600 rounded-3xl border-2 border-border bg-card p-600"
+      transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+      className="px-inset mt-500 p-400"
     >
-      <div className="flex items-center gap-300">
-        {good || partial ? (
-          <CheckCircle2 className="icon-size-500 text-success" aria-hidden />
-        ) : (
-          <XCircle className="icon-size-500 text-destructive" aria-hidden />
-        )}
-        <p className="font-heading text-500 font-bold">
-          {good ? 'Spot on!' : partial ? 'Partly right' : 'Not quite'}
+      {message && (
+        <p className="font-pixel text-400 leading-400 text-foreground">
+          {message}
         </p>
-        <span className="ml-auto rounded-full bg-muted px-300 py-100 font-numeric text-400 font-bold">
+      )}
+      <div className="mt-200 flex items-center gap-300">
+        <p className={`font-pixel text-500 font-bold ${tone}`}>{verdict}</p>
+        <span className="ml-auto font-pixel text-400 font-bold text-[#ffd23f]">
           +{points}
         </span>
       </div>
-      <p className="mt-300 text-400 leading-400 text-foreground">
+      <p className="mt-200 text-400 leading-400 text-foreground/90">
         {explanation}
       </p>
-      <div className="mt-500 flex flex-wrap items-center gap-400">
+      <div className="mt-400 flex flex-wrap items-center gap-400">
         {href ? (
           <a
             href={href}
@@ -69,9 +79,9 @@ export function Feedback({
             Source: Rayfin guide — {source.replace('rayfin-docs:', '')}
           </span>
         )}
-        <Button ref={next} className="ml-auto" onClick={onContinue}>
-          Continue <ArrowRight className="icon-size-300" aria-hidden />
-        </Button>
+        <PixelButton ref={next} className="ml-auto" onClick={onContinue}>
+          Continue ▸
+        </PixelButton>
       </div>
     </motion.section>
   );
