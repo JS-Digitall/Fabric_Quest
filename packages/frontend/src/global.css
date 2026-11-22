@@ -140,6 +140,7 @@
     'Instrument Sans', 'Segoe UI', sans-serif; /* body text, labels, UI controls */
   --font-monospace:
     'JetBrains Mono', Consolas, 'Courier New', monospace; /* code, pre-formatted text */
+  --font-pixel: 'Pixelify Sans', 'JetBrains Mono', monospace; /* pixel labels, numbers */
   --font-numeric:
     'JetBrains Mono', Consolas, monospace; /* scores, numeric displays */
 
@@ -270,11 +271,18 @@ body,
   }
 }
 
-/*
- * JRPG menu windows (battles, chests). The shared quiz components use semantic
- * tokens, so re-scoping the tokens here re-skins them without touching their code.
- * Always the same "night window" look, in light and dark mode — like the HUD.
- */
+/* ------------------------------------------------------------------
+ * Pixel UI kit (.px-*). Every game window, button, bar and menu uses it.
+ * The game UI is always the "night window" look — in light and dark mode.
+ * ------------------------------------------------------------------ */
+
+:root {
+  /* Strong ease-out for UI; feels instant without being abrupt. */
+  --ease-ui: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Night-window tokens: the shared quiz components re-skin through these. */
+.px-ui,
 .rpg-panel {
   --color-background: #14213d;
   --color-foreground: #f4f1e8;
@@ -299,37 +307,223 @@ body,
   --font-heading: 'Pixelify Sans', 'Bricolage Grotesque', sans-serif;
   /* Pixelify's fl ligature reads as "A" ("floors" -> "Aoors"). */
   font-variant-ligatures: none;
-
-  position: relative;
-  background: var(--color-background);
   color: var(--color-foreground);
-  border: 4px solid #f4f1e8;
-  border-radius: 10px;
-  /* A dark outer ring plus a soft drop: the classic two-tone window frame. */
-  box-shadow:
-    0 0 0 4px #0b1224,
-    inset 0 0 0 2px #0b1224,
-    0 18px 40px rgb(0 0 0 / 0.45);
 }
 
-/* Blinking selection cursor on answer options. */
-.rpg-panel ul > li > button {
+/* Window frame: a 9×9 pixel border (stepped dark outline, cream double rule,
+   dark inner line) sliced with border-image, so it stays crisp at any size. */
+.px-window,
+.rpg-panel {
   position: relative;
+  border: 12px solid transparent;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%230b1224' d='M1 0h7v1H1zM1 8h7v1H1zM0 1h1v7H0zM8 1h1v7H8z'/%3E%3Cpath fill='%23f4f1e8' d='M1 1h7v7H1z'/%3E%3Cpath fill='%230b1224' d='M1 1h1v1H1zM7 1h1v1H7zM1 7h1v1H1zM7 7h1v1H7zM3 3h3v3H3z'/%3E%3Cpath fill='%23d9d2bf' d='M2 6h5v1H2zM6 2h1v5H6z'/%3E%3C/svg%3E")
+    4 / 12px stretch;
+  background: linear-gradient(180deg, #1a2a50 0%, #14213d 55%, #101a33 100%) padding-box;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 14px 28px rgb(0 0 0 / 0.45));
 }
-.rpg-panel ul > li > button:is(:hover, :focus-visible):not(:disabled)::before {
-  content: '\25B6\FE0E'; /* text-style triangle, not the blue emoji tile */
-  position: absolute;
-  left: -1.35rem;
+
+.px-parchment {
+  --color-background: #f3e7c9;
+  --color-foreground: #2b1d0e;
+  --color-card: #fbf3df;
+  --color-card-foreground: #2b1d0e;
+  --color-muted: #e8d8b0;
+  --color-muted-foreground: #6b5534;
+  --color-border: #c9b07a;
+  --color-primary: #8a4b14;
+  --color-primary-foreground: #fff6e0;
+  --color-primary-shadow: #5a2f08;
+  --color-ring: #8a4b14;
+  --color-success: #2f7d3a;
+  background: linear-gradient(180deg, #fbf1d6, #f0e0b8) padding-box;
+}
+
+/* Pixel button: notched corners, top highlight, bottom bevel, press-in. */
+.px-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-200);
+  padding: 10px 18px 12px;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: var(--text-400);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-primary-foreground);
+  background: var(--color-primary);
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.45),
+    inset 0 -4px 0 var(--color-primary-shadow);
+  transition: transform 120ms var(--ease-ui), filter 120ms ease;
+  cursor: pointer;
+}
+.px-button:active:not(:disabled) {
+  transform: translateY(2px) scale(0.98);
+  box-shadow:
+    inset 0 2px 0 rgb(0 0 0 / 0.15),
+    inset 0 -1px 0 var(--color-primary-shadow);
+}
+.px-button:focus-visible {
+  outline: 3px solid var(--color-foreground);
+  outline-offset: 3px;
+}
+.px-button:disabled {
+  filter: grayscale(0.6) brightness(0.8);
+  cursor: not-allowed;
+}
+@media (hover: hover) and (pointer: fine) {
+  .px-button:hover:not(:disabled) {
+    filter: brightness(1.08);
+  }
+}
+.px-button-ghost {
+  color: var(--color-foreground);
+  background: var(--color-muted);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.12),
+    inset 0 -4px 0 rgb(0 0 0 / 0.35);
+}
+
+.px-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: var(--text-200);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted-foreground);
+  background: var(--color-muted);
+  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 3px);
+}
+.px-chip-gold {
+  color: #14213d;
+  background: #ffd23f;
+}
+
+/* Segmented bar. */
+.px-bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  height: 12px;
+  padding: 2px;
+  background: #0b1224;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+.px-bar-seg {
+  background: rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.25);
+  transition: background-color 200ms ease;
+}
+
+/* Command menu option. */
+.px-option {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: 12px 14px;
+  text-align: left;
+  font-size: var(--text-400);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-foreground);
+  background: var(--color-card);
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+  box-shadow: inset 0 0 0 2px var(--color-border);
+  cursor: pointer;
+}
+.px-option:focus-visible,
+.px-option:active:not(:disabled) {
+  outline: none;
+  box-shadow:
+    inset 0 0 0 2px var(--color-primary),
+    inset 0 0 0 4px rgb(255 210 63 / 0.18);
+  background: var(--color-accent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .px-option:hover:not(:disabled) {
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+    background: var(--color-accent);
+  }
+}
+.px-option:disabled {
+  cursor: default;
+}
+.px-option[data-state='right'] {
+  box-shadow: inset 0 0 0 2px var(--color-success);
+  background: color-mix(in oklab, var(--color-success) 16%, var(--color-card));
+}
+.px-option[data-state='wrong'] {
+  box-shadow: inset 0 0 0 2px var(--color-destructive);
+  background: color-mix(in oklab, var(--color-destructive) 16%, var(--color-card));
+}
+.px-option[data-state='dim'] {
+  opacity: 0.55;
+}
+.px-option-key {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  place-items: center;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: var(--text-300);
   color: var(--color-primary);
-  animation: rpg-blink 0.7s steps(2, jump-none) infinite;
+  background: #0b1224;
 }
-@keyframes rpg-blink {
+.px-option[data-state='right'] .px-option-key {
+  color: var(--color-success);
+}
+.px-option[data-state='wrong'] .px-option-key {
+  color: var(--color-destructive);
+}
+
+/* Blinking ▶ cursor on the focused or hovered option (decorative, not animated on move). */
+.px-cursor {
+  width: 12px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+  font-size: 12px;
+  opacity: 0;
+}
+.px-option:focus-visible .px-cursor {
+  opacity: 1;
+  animation: px-blink 0.8s steps(1) infinite;
+}
+@media (hover: hover) and (pointer: fine) {
+  .px-option:hover:not(:disabled) .px-cursor {
+    opacity: 1;
+    animation: px-blink 0.8s steps(1) infinite;
+  }
+}
+@keyframes px-blink {
   50% {
     opacity: 0;
   }
 }
+
+/* Pixel-wipe used for battle entrances. */
+@keyframes px-wipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .rpg-panel ul > li > button::before {
+  .px-cursor,
+  .px-option:focus-visible .px-cursor {
     animation: none !important;
+  }
+  .px-button {
+    transition: none;
   }
 }
