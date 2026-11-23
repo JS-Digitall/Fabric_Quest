@@ -176,4 +176,5 @@ Hosted assets stay protected (`assetAccess: protected`), and the game is only re
 - Built on the Rayfin **Universal App** template for Fabric Apps.
 - Questions verified against [Microsoft Learn](https://learn.microsoft.com/fabric/) and the Rayfin guide.
 - The world, characters and sounds are original and generated in code. The story company, Aurora Outfitters, is fictional, and so is the data shown in the chart questions.
+- A community project by JS-Digitall. Not affiliated with or endorsed by Microsoft; Microsoft Fabric and Microsoft Learn are Microsoft trademarks.
 - Released under the [MIT License](LICENSE).
