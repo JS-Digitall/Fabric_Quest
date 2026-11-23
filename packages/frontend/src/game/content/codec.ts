@@ -94,8 +94,12 @@ export function assembleChapters(
       if (issues.length) throw new ContentError(id, issues);
       chapters.push(chapter);
     } catch (e) {
-      if (!(e instanceof ContentError)) throw e;
-      invalid.push(e);
+      // A row with the wrong shape can make validation itself throw.
+      invalid.push(
+        e instanceof ContentError
+          ? e
+          : new ContentError(id, [{ message: 'Stored scene data is damaged' }])
+      );
     }
   }
   return { chapters, sources, invalid };

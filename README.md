@@ -130,7 +130,7 @@ Fabric Quest stores its questions in the app's own Fabric database, so your team
    RAYFIN_PUBLIC_EDITOR_EMAILS=lead@contoso.com,trainer@contoso.com
    ```
 
-   Use the exact email each person signs in to Fabric with. The server compares it letter for letter, so `Anna@contoso.com` and `anna@contoso.com` are different. With no editors listed, nobody can change the questions.
+   Use the exact email each person signs in to Fabric with. The server compares it letter for letter, so `Anna@contoso.com` and `anna@contoso.com` are different. With no editors listed, nobody can change the questions. The list is built into the app so it can show the editor button, which means anyone who can sign in to the app could read these addresses.
 2. **Deploy**, so the server picks up the list: `npx rayfin login`, then `npm run rayfin:up`. Deploy again whenever you change the list.
 3. **Copy the starter questions.** Sign in as an editor and choose **Edit questions** on the title screen. Until you copy them, each region plays the built-in starter questions. **Copy all starter chapters** saves them to the database so you can edit them.
 4. **Edit.** Pick a region to change its title and tagline, edit its Intro and Outro stories, and add, edit, reorder or delete questions. Changes go live for players as soon as you save.

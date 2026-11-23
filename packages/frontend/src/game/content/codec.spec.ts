@@ -50,6 +50,14 @@ describe('assembleChapters', () => {
     expect(r.chapters.find((c) => c.id === 'governance')).toBeUndefined();
   });
 
+  it('reports a scene whose stored fields are missing', () => {
+    const rows = rowsFor();
+    const i = rows.findIndex((r) => r.kind === 'choice');
+    rows[i] = { ...rows[i], body: '{}' };
+    const r = assembleChapters([], rows, chapters);
+    expect(r.invalid.map((e) => e.chapterId)).toEqual(['governance']);
+  });
+
   it('reports an unknown scene kind', () => {
     const rows = rowsFor();
     rows[1] = { ...rows[1], kind: 'quiz' };

@@ -47,8 +47,9 @@ export function ContentProvider({
     };
   }, [load]);
 
+  // Keeps loaded content on screen while refreshing, so open editor forms survive.
   const reload = useCallback(async () => {
-    setState({ status: 'loading' });
+    setState((s) => ('stored' in s ? s : { status: 'loading' }));
     setState(await resolveContent(load));
   }, [load]);
 

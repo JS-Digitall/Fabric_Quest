@@ -10,7 +10,12 @@ vi.mock('../rpg/phaser/PhaserGame', () => ({
 }));
 vi.mock('@/lib/rayfin-client', () => ({ getRayfinClient: async () => ({}) }));
 const repo = vi.hoisted(() => ({
-  copyStarter: vi.fn(async () => ({ written: 1, failed: [] as string[] })),
+  copyStarter: vi.fn<
+    (client: unknown, chapter: { id: string }) => Promise<{
+      written: number;
+      failed: string[];
+    }>
+  >(async () => ({ written: 1, failed: [] })),
   saveScene: vi.fn(async () => {}),
 }));
 vi.mock('./repo', async (importOriginal) => ({
@@ -136,7 +141,7 @@ describe('editor', () => {
 
   it('keeps the edits and explains a refused save', async () => {
     repo.saveScene.mockRejectedValueOnce(new WriteRefusedError(new Error('403')));
-    renderEditor({ meta: [], rows: governanceRows });
+    const load = renderEditor({ meta: [], rows: governanceRows });
     await openChapter(governance.title);
     fireEvent.click(screen.getAllByRole('button', { name: /^edit/i })[1]);
     const prompt = screen.getByRole('textbox', { name: /prompt/i });
@@ -145,8 +150,26 @@ describe('editor', () => {
     expect(
       await screen.findByText(/not on this app’s editor list/i)
     ).toBeInTheDocument();
+    // Refreshes in case part of the change landed, without closing the form.
+    await vi.waitFor(() => expect(load).toHaveBeenCalledTimes(2));
     expect(screen.getByRole('textbox', { name: /prompt/i })).toHaveValue(
       'A brand new prompt?'
     );
+  });
+
+  it('copies the other chapters and points to the fix when one copy fails', async () => {
+    repo.copyStarter.mockImplementation(async (_c: unknown, chapter: { id: string }) => ({
+      written: 1,
+      failed: chapter.id === 'ingest' ? ['ingest-x'] : [],
+    }));
+    const load = renderEditor({ meta: [], rows: [] });
+    fireEvent.click(
+      await screen.findByRole('button', { name: /copy all starter chapters/i })
+    );
+    expect(
+      await screen.findByText(/copy missing starter questions/i)
+    ).toBeInTheDocument();
+    expect(repo.copyStarter).toHaveBeenCalledTimes(6);
+    await vi.waitFor(() => expect(load).toHaveBeenCalledTimes(2));
   });
 });

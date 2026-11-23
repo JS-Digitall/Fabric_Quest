@@ -52,6 +52,8 @@ export function EditorScreen({ onBack }: { onBack: () => void }) {
       return true;
     } catch (e) {
       setError(describeError(e));
+      // Part of a multi-step change may have landed; show what's really stored.
+      await content.reload();
       return false;
     } finally {
       setBusy(false);
@@ -120,16 +122,18 @@ export function EditorScreen({ onBack }: { onBack: () => void }) {
               disabled={busy}
               onClick={() =>
                 void run(async (c) => {
+                  const incomplete: string[] = [];
                   for (const cid of onStarter) {
                     const ch = starter.find((x) => x.id === cid)!;
                     const metaId =
                       stored.meta.find((m) => m.chapterId === cid)?.id ?? null;
                     const r = await copyStarter(c, ch, new Set(), metaId);
-                    if (r.failed.length)
-                      throw new Error(
-                        `Some questions in “${ch.title}” weren’t copied. Copy again to finish.`
-                      );
+                    if (r.failed.length) incomplete.push(ch.title);
                   }
+                  if (incomplete.length)
+                    throw new Error(
+                      `Some questions weren’t copied in: ${incomplete.join(', ')}. Open each one and choose “Copy missing starter questions”.`
+                    );
                 })
               }
             >
@@ -151,9 +155,12 @@ export function EditorScreen({ onBack }: { onBack: () => void }) {
             run={run}
           />
         ) : (
-          <p className="text-400 text-foreground/90">
-            Pick a chapter to edit its questions.
-          </p>
+          <div className="grid content-start gap-300">
+            {errorBox}
+            <p className="text-400 text-foreground/90">
+              Pick a chapter to edit its questions.
+            </p>
+          </div>
         )}
       </div>
     );
