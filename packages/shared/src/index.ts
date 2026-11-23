@@ -29,3 +29,5 @@ export type UniversalAppSchema = {
   ChapterContent: ChapterContentRecord;
   SceneContent: SceneContentRecord;
 };
+export * from './content.js';
+export * from './validate.js';
