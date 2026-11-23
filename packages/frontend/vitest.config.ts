@@ -39,6 +39,10 @@ export default defineConfig({
     passWithNoTests: true,
   },
   resolve: {
-    alias: { '@': resolve(import.meta.dirname, 'src') },
+    alias: {
+      '@': resolve(import.meta.dirname, 'src'),
+      // Specs read shared source directly so they never run against a stale dist.
+      '@rayfin-app/shared': resolve(import.meta.dirname, '../shared/src/index.ts'),
+    },
   },
 });

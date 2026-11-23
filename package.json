@@ -45,6 +45,7 @@
     "typecheck": "tsc -b"
   },
   "rayfinPacks": [
+    "data-modeling",
     "visuals"
   ]
 }
