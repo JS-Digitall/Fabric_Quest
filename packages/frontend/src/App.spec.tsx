@@ -6,15 +6,21 @@
 //-----------------------------------------------------------------------
 
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 import App from '@/App';
 
+// The game loads its questions from the database; these specs cover auth only.
+vi.mock('@/game/content/load', () => ({
+  loadContent: async () => ({ meta: [], rows: [] }),
+}));
+vi.mock('@/lib/rayfin-client', () => ({ getRayfinClient: async () => ({}) }));
+
 describe('App', () => {
-  it('renders the Fabric Quest game', () => {
+  it('renders the Fabric Quest game', async () => {
     render(<App />);
     expect(
-      screen.getByRole('heading', { name: /fabric quest/i })
+      await screen.findByRole('heading', { name: /fabric quest/i })
     ).toBeInTheDocument();
   });
 });

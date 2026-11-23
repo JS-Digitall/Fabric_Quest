@@ -19,24 +19,33 @@ vi.mock('./rpg/phaser/PhaserGame', async () => {
   };
 });
 
+import { ContentProvider } from './content/ContentProvider';
 import { GameApp } from './GameApp';
 
 const click = (name: RegExp | string) =>
   fireEvent.click(screen.getByRole('button', { name }));
 
+/** The game with an empty database, so it plays the starter questions. */
+async function renderGame() {
+  const r = render(
+    <ContentProvider load={async () => ({ meta: [], rows: [] })}>
+      <GameApp />
+    </ContentProvider>
+  );
+  await screen.findByRole('heading', { name: /fabric quest/i });
+  return r;
+}
+
 describe('game flow', () => {
-  it('runs the world in attract mode behind the title', () => {
-    const { unmount } = render(<GameApp />);
+  it('runs the world in attract mode behind the title', async () => {
+    const { unmount } = await renderGame();
     expect(live.modes).toEqual(['attract']);
-    expect(
-      screen.getByRole('heading', { name: /fabric quest/i })
-    ).toBeInTheDocument();
     unmount();
     expect(live.modes).toEqual([]);
   });
 
-  it('keeps one attract world through difficulty, then swaps in the real world', () => {
-    const { unmount } = render(<GameApp />);
+  it('keeps one attract world through difficulty, then swaps in the real world', async () => {
+    const { unmount } = await renderGame();
     click(/start/i);
     expect(live.modes).toEqual(['attract']);
     click(/beginner/i);
@@ -47,8 +56,8 @@ describe('game flow', () => {
     unmount();
   });
 
-  it('never runs two worlds when visiting the summary and coming back', () => {
-    const { unmount } = render(<GameApp />);
+  it('never runs two worlds when visiting the summary and coming back', async () => {
+    const { unmount } = await renderGame();
     click(/start/i);
     click(/beginner/i);
     click(/summary/i);

@@ -5,10 +5,15 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+import { ContentProvider } from './game/content/ContentProvider';
 import { GameApp } from './game/GameApp';
 
 function App() {
-  return <GameApp />;
+  return (
+    <ContentProvider>
+      <GameApp />
+    </ContentProvider>
+  );
 }
 
 export default App;
