@@ -92,7 +92,8 @@ packages/frontend/src/game/
 ├── GameApp.tsx              # Screen flow: title → difficulty → world ↔ summary
 ├── useGame.ts               # Top-level game state (campaign survives screen changes)
 ├── engine.ts                # Scoring and difficulty filtering
-├── content/                 # Six verified chapters of questions, one file per region
+├── content/                 # Starter chapters, loading from the database, row codec
+├── editor/                  # In-app question editor (editors only)
 ├── scenes/                  # Puzzle pieces reused in battles (feedback, ordering, matching, chart)
 ├── screens/menus.tsx        # Title, save slots, quest log
 └── rpg/
@@ -107,17 +108,41 @@ No image or audio files ship with the game. Every tile, sprite, glow and sound i
 
 ## Content and fact checking
 
-The questions live in `packages/frontend/src/game/content/`. Each one has the correct answer, an explanation and a `source`:
+The starter questions live in `packages/frontend/src/game/content/`. Each one has the correct answer, an explanation and a `source`:
 
 - For OneLake, Data Factory, semantic models, governance and Fabric IQ, the source is a `learn.microsoft.com` page.
 - For the App Forge (Fabric App limits), the source is the Rayfin guide that ships with the project (`rayfin-docs:…`).
 
-Facts were checked against those sources when they were written, and anything that couldn't be verified was dropped. `content.spec.ts` enforces the structure:
+Facts were checked against those sources when they were written, and anything that couldn't be verified was dropped. The same rules guard the starter content in tests, the in-app editor, and the game when it loads saved questions (`packages/shared/src/validate.ts`):
 
-- every question has an explanation and an allowed source
-- every region has at least four questions per difficulty, with both creature questions and boss puzzles
+- every question has an explanation and an `https://` source (the starter questions cite Microsoft Learn or the Rayfin guide)
+- every region has at least four questions per difficulty, with both creature questions (multiple choice) and boss puzzles
 - answers are well-formed
-- explanations contain no stray markup
+- each region opens with an Intro story and ends with an Outro story
+
+## Make it yours: edit the questions in the app
+
+Fabric Quest stores its questions in the app's own Fabric database, so your team can replace them with its own without touching code.
+
+1. **Choose your editors.** Copy `rayfin/.env.example` to `rayfin/.env` (it's git-ignored) and list the people who may edit, comma-separated:
+
+   ```sh
+   RAYFIN_PUBLIC_EDITOR_EMAILS=lead@contoso.com,trainer@contoso.com
+   ```
+
+   Use the exact email each person signs in to Fabric with. The server compares it letter for letter, so `Anna@contoso.com` and `anna@contoso.com` are different. With no editors listed, nobody can change the questions. The list is built into the app so it can show the editor button, which means anyone who can sign in to the app could read these addresses.
+2. **Deploy**, so the server picks up the list: `npx rayfin login`, then `npm run rayfin:up`. Deploy again whenever you change the list.
+3. **Copy the starter questions.** Sign in as an editor and choose **Edit questions** on the title screen. Until you copy them, each region plays the built-in starter questions. **Copy all starter chapters** saves them to the database so you can edit them.
+4. **Edit.** Pick a region to change its title and tagline, edit its Intro and Outro stories, and add, edit, reorder or delete questions. Changes go live for players as soon as you save.
+
+What stays fixed:
+
+- **Six regions.** Each region is a place on the map with its own characters and boss, so you can rename regions but not add or remove them.
+- **Stories.** Each region has exactly one Intro and one Outro.
+- **Enough questions.** Each region needs at least four questions per difficulty, including a multiple-choice question and a puzzle or chart question. The editor won't save a change that breaks this.
+- **Sources.** Every question needs an `https://` source link, such as a Microsoft Learn page or your team's own wiki. The game labels Microsoft Learn links as such and any other link as "Read the source".
+
+If a region's saved questions ever become unplayable, for example after a copy that stopped halfway, players see which region needs fixing. Editors can finish the copy or use **Reset chapter to starter questions**.
 
 ## The Fabric App limits it teaches
 
@@ -176,4 +201,5 @@ Hosted assets stay protected (`assetAccess: protected`), and the game is only re
 - Built on the Rayfin **Universal App** template for Fabric Apps.
 - Questions verified against [Microsoft Learn](https://learn.microsoft.com/fabric/) and the Rayfin guide.
 - The world, characters and sounds are original and generated in code. The story company, Aurora Outfitters, is fictional, and so is the data shown in the chart questions.
+- A community project by JS-Digitall. Not affiliated with or endorsed by Microsoft; Microsoft Fabric and Microsoft Learn are Microsoft trademarks.
 - Released under the [MIT License](LICENSE).

@@ -11,6 +11,8 @@ interface ImportMetaEnv {
   readonly VITE_FABRIC_ITEM_ID?: string;
   /** Fabric portal base URL (e.g. https://app.fabric.microsoft.com/). */
   readonly VITE_FABRIC_PORTAL_URL?: string;
+  /** Comma-separated editor emails, from RAYFIN_PUBLIC_EDITOR_EMAILS in rayfin/.env. */
+  readonly VITE_RAYFIN_EDITOR_EMAILS?: string;
 }
 
 interface ImportMeta {

@@ -48,3 +48,4 @@ rayfin.config.json
 
 # rayfin-local backend state (local SQLite, sessions)
 .rayfin-local
+!rayfin/.env.example

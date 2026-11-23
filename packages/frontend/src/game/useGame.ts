@@ -4,7 +4,7 @@ import { recordResult } from './engine';
 import { newCampaign, type Campaign } from './rpg/campaign';
 import type { ChapterId, Difficulty, GameState } from './types';
 
-export type ScreenName = 'title' | 'difficulty' | 'world' | 'summary';
+export type ScreenName = 'title' | 'difficulty' | 'world' | 'summary' | 'editor';
 
 export interface Game extends GameState {
   screen: ScreenName;

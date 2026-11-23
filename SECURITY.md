@@ -1,14 +1,13 @@
-<!-- BEGIN MICROSOFT SECURITY.MD V1.0.0 BLOCK -->
-
 # Security
 
-Microsoft takes the security of our software products and services seriously, which
-includes all source code repositories in our GitHub organizations.
+Fabric Quest is a community project maintained by JS-Digitall. It is not a Microsoft product.
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+**Please don't report security vulnerabilities through public GitHub issues.**
 
-For security reporting information, locations, contact information, and policies,
-please review the latest guidance for Microsoft repositories at
-[https://aka.ms/SECURITY.md](https://aka.ms/SECURITY.md).
+Report them privately with GitHub's **Report a vulnerability** button on the
+[Security tab](https://github.com/JS-Digitall/Fabric_Quest/security) of this repository.
+Include what you found, how to reproduce it, and what an attacker could do with it.
+You'll get an acknowledgement as soon as the maintainer can, and a fix or a decision once it has been looked at.
 
-<!-- END MICROSOFT SECURITY.MD BLOCK -->
+Vulnerabilities in Microsoft Fabric, Rayfin or other Microsoft software belong with Microsoft:
+see the [Microsoft Security Response Center](https://msrc.microsoft.com/).

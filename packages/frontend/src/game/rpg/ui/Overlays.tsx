@@ -1,5 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, Heart } from 'lucide-react';
+
+import { isLearnLink } from '../../scenes/source';
 import { useEffect, useRef, useState } from 'react';
 
 import type { Chapter, DialogueScene } from '../../types';
@@ -173,7 +175,7 @@ export function ChestCard({
                 rel="noreferrer"
                 className="inline-flex items-center gap-100 text-300 font-semibold text-primary underline-offset-4 hover:underline"
               >
-                Read up on Microsoft Learn{' '}
+                {isLearnLink(source) ? 'Read up on Microsoft Learn' : 'Read the source'}{' '}
                 <ExternalLink className="icon-size-200" aria-hidden />
               </a>
             )}

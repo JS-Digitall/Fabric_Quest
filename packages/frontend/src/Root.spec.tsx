@@ -11,6 +11,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Root } from './Root';
 import type { AuthConfig, IAuthService } from './services/rayfin-auth.service';
 
+// The game loads its questions from the database; these specs cover auth only.
+vi.mock('./game/content/load', () => ({
+  loadContent: async () => ({ meta: [], rows: [] }),
+}));
+vi.mock('./lib/rayfin-client', () => ({ getRayfinClient: async () => ({}) }));
+
 const authenticated: OpaqueSession = {
   user: null,
   isAuthenticated: true,

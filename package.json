@@ -1,8 +1,8 @@
 {
   "name": "fabric-apps-game",
-  "description": "A lean React + Vite starter that grows into anything. A built-in capability router reads what you ask for, then enables the right Rayfin services, installs the right modules, and activates the right skills — Fabric analytics dashboards, CRUD apps, or functions.",
+  "description": "Fabric Quest: a pixel-art JRPG that teaches Microsoft Fabric, built as a Fabric App. A community project, not affiliated with Microsoft.",
   "license": "MIT",
-  "author": "Microsoft",
+  "author": "JS-Digitall",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -45,6 +45,7 @@
     "typecheck": "tsc -b"
   },
   "rayfinPacks": [
+    "data-modeling",
     "visuals"
   ]
 }

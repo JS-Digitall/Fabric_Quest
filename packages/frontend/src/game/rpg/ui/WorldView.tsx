@@ -1,7 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { chapters } from '../../content';
 import type {
   Chapter,
   ChapterId,
@@ -30,6 +29,7 @@ import { Hud } from './Hud';
 import { ChestCard, DialogueBox, RegionBanner, Toast } from './Overlays';
 
 export interface WorldViewProps {
+  chapters: Chapter[];
   campaign: Campaign;
   onCampaign: (c: Campaign) => void;
   onResult: (chapter: ChapterId, r: ChapterResult) => void;
@@ -38,7 +38,6 @@ export interface WorldViewProps {
 }
 
 const CHEST_HEAL = 40;
-const chapterOf = (id: RegionId) => chapters.find((c) => c.id === id)!;
 const regionOf = (id: RegionId) => REGIONS.find((r) => r.id === id)!;
 const dialogues = (c: Chapter) =>
   c.scenes.filter((s): s is DialogueScene => s.kind === 'dialogue');
@@ -54,11 +53,16 @@ type Overlay =
   | null;
 
 export function WorldView({
+  chapters,
   campaign,
   onCampaign,
   onResult,
   onSummary,
 }: WorldViewProps) {
+  const chapterOf = useCallback(
+    (id: RegionId) => chapters.find((c) => c.id === id)!,
+    [chapters]
+  );
   const bus = useMemo(() => createBus(), []);
   // Snapshot for building the world; later changes travel as bus commands.
   const [initial] = useState(() => ({
@@ -175,7 +179,7 @@ export function WorldView({
           }
         }
       }),
-    [bus, onCampaign, sfx]
+    [bus, onCampaign, sfx, chapterOf]
   );
 
   function close() {

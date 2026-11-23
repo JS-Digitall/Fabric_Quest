@@ -1,19 +1,26 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { chapters } from './content';
+import { useContent } from './content/content-context';
+import { EditorScreen } from './editor/EditorScreen';
+import { useIsEditor } from './editor/useIsEditor';
+import { PixelButton } from './rpg/ui/kit';
 import { AttractWorld } from './rpg/ui/AttractWorld';
 import { WorldView } from './rpg/ui/WorldView';
+import { ContentStatus } from './screens/ContentStatus';
 import { DifficultyScreen, SummaryScreen, TitleScreen } from './screens/menus';
 import { useGame, type ScreenName } from './useGame';
 
 export function GameApp() {
   const [game, dispatch] = useGame();
+  const content = useContent();
+  const isEditor = useIsEditor();
   const go = (screen: ScreenName) => dispatch({ type: 'go', screen });
 
-  if (game.screen === 'world' && game.campaign)
+  if (content.status === 'ready' && game.screen === 'world' && game.campaign)
     return (
       <main className="fixed inset-0 overflow-hidden bg-background text-foreground">
         <WorldView
+          chapters={content.chapters}
           campaign={game.campaign}
           onCampaign={(campaign) => dispatch({ type: 'campaign', campaign })}
           onResult={(chapter, r) =>
@@ -26,12 +33,39 @@ export function GameApp() {
     );
 
   let view;
-  if (game.screen === 'title')
-    view = <TitleScreen onStart={() => go('difficulty')} />;
+  let key: string = game.screen;
+  // The editor stays open while it reloads content after each save.
+  if (game.screen === 'editor' && isEditor)
+    view = <EditorScreen onBack={() => go('title')} />;
+  else if (content.status !== 'ready') {
+    key = `content-${content.status}`;
+    view = (
+      <ContentStatus
+        state={content}
+        onRetry={() => void content.reload()}
+        actions={
+          isEditor && (
+            <PixelButton
+              className="mt-500 px-600 py-200"
+              onClick={() => go('editor')}
+            >
+              Open the question editor
+            </PixelButton>
+          )
+        }
+      />
+    );
+  } else if (game.screen === 'title')
+    view = (
+      <TitleScreen
+        onStart={() => go('difficulty')}
+        onEdit={isEditor ? () => go('editor') : undefined}
+      />
+    );
   else if (game.screen === 'summary')
     view = (
       <SummaryScreen
-        chapters={chapters}
+        chapters={content.chapters}
         game={game}
         onBack={() => go('world')}
       />
@@ -51,7 +85,7 @@ export function GameApp() {
       <div className="relative h-full overflow-y-auto px-500 py-600">
         <AnimatePresence mode="wait">
           <motion.div
-            key={game.screen}
+            key={key}
             className="flex min-h-full items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
