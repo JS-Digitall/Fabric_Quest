@@ -47,7 +47,14 @@ const DIFFICULTIES: {
 const percent = (r: Result) =>
   r.max === 0 ? 0 : Math.round((r.score / r.max) * 100);
 
-export function TitleScreen({ onStart }: { onStart: () => void }) {
+export function TitleScreen({
+  onStart,
+  onEdit,
+}: {
+  onStart: () => void;
+  /** Set only for editors. */
+  onEdit?: () => void;
+}) {
   const reduced = useReducedMotion();
   // Classic "press start": Enter begins the quest from anywhere on the title.
   useEffect(() => {
@@ -88,6 +95,15 @@ export function TitleScreen({ onStart }: { onStart: () => void }) {
         <p className="mt-300 font-pixel text-300 text-muted-foreground">
           Press <span className="text-foreground">Enter</span> to begin
         </p>
+        {onEdit && (
+          <PixelButton
+            variant="ghost"
+            className="mt-400 px-500 py-200 text-300"
+            onClick={onEdit}
+          >
+            Edit questions
+          </PixelButton>
+        )}
       </PixelWindow>
       <p className="mt-400 font-pixel text-300 text-[#f4f1e8]/70">
         WASD / arrows walk · Space talks and opens chests

@@ -1,6 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useContent } from './content/content-context';
+import { EditorScreen } from './editor/EditorScreen';
+import { useIsEditor } from './editor/useIsEditor';
+import { PixelButton } from './rpg/ui/kit';
 import { AttractWorld } from './rpg/ui/AttractWorld';
 import { WorldView } from './rpg/ui/WorldView';
 import { ContentStatus } from './screens/ContentStatus';
@@ -10,6 +13,7 @@ import { useGame, type ScreenName } from './useGame';
 export function GameApp() {
   const [game, dispatch] = useGame();
   const content = useContent();
+  const isEditor = useIsEditor();
   const go = (screen: ScreenName) => dispatch({ type: 'go', screen });
 
   if (content.status === 'ready' && game.screen === 'world' && game.campaign)
@@ -30,13 +34,34 @@ export function GameApp() {
 
   let view;
   let key: string = game.screen;
-  if (content.status !== 'ready') {
+  // The editor stays open while it reloads content after each save.
+  if (game.screen === 'editor' && isEditor)
+    view = <EditorScreen onBack={() => go('title')} />;
+  else if (content.status !== 'ready') {
     key = `content-${content.status}`;
     view = (
-      <ContentStatus state={content} onRetry={() => void content.reload()} />
+      <ContentStatus
+        state={content}
+        onRetry={() => void content.reload()}
+        actions={
+          isEditor && (
+            <PixelButton
+              className="mt-500 px-600 py-200"
+              onClick={() => go('editor')}
+            >
+              Open the question editor
+            </PixelButton>
+          )
+        }
+      />
     );
   } else if (game.screen === 'title')
-    view = <TitleScreen onStart={() => go('difficulty')} />;
+    view = (
+      <TitleScreen
+        onStart={() => go('difficulty')}
+        onEdit={isEditor ? () => go('editor') : undefined}
+      />
+    );
   else if (game.screen === 'summary')
     view = (
       <SummaryScreen

@@ -72,6 +72,15 @@ export function validateScene(scene: Scene, chapterId?: ChapterId): Issue[] {
         if (blank(c.title) || blank(c.x) || blank(c.y))
           add('chart', 'Chart needs a title and both axis names');
         if (c.rows.length === 0) add('chart', 'Chart needs at least one row');
+        if (
+          c.rows.some(
+            (r) =>
+              blank(String(r[c.x] ?? '')) ||
+              typeof r[c.y] !== 'number' ||
+              !Number.isFinite(r[c.y])
+          )
+        )
+          add('chart', 'Every bar needs a label and a number');
       }
       break;
     case 'arrange':

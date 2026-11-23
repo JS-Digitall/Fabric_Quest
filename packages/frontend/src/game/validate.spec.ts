@@ -101,6 +101,16 @@ describe('validateScene', () => {
     expect(issues.map((i) => i.field)).toContain('source');
   });
 
+  it('flags a chart bar without a number', () => {
+    const dash = byId('semantic').scenes.find((s) => s.kind === 'dashboard')!;
+    if (dash.kind !== 'dashboard') throw new Error('fixture');
+    const rows = dash.chart.rows.map((r, i) =>
+      i === 0 ? { ...r, [dash.chart.y]: NaN } : r
+    );
+    const issues = validateScene({ ...dash, chart: { ...dash.chart, rows } });
+    expect(issues.map((i) => i.field)).toContain('chart');
+  });
+
   it('flags a story scene with no lines', () => {
     const intro = byId('onelake').scenes[0];
     expect(intro.kind).toBe('dialogue');
