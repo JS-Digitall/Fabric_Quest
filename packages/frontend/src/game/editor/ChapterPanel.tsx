@@ -37,7 +37,7 @@ function blankQuestion(kind: NewKind, id: string): QuestionScene {
     id,
     difficulties: [...DIFFICULTIES],
     explanation: '',
-    source: 'https://learn.microsoft.com/',
+    source: '',
     prompt: '',
   };
   switch (kind) {

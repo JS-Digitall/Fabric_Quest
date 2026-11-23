@@ -20,6 +20,18 @@ describe('starter content', () => {
   });
 
   it.each(chapters.map((c) => [c.id, c] as const))(
+    '%s: cites Microsoft Learn (or the Rayfin guide in the App Forge)',
+    (id, chapter) => {
+      for (const q of questions(chapter)) {
+        const ok =
+          q.source.startsWith('https://learn.microsoft.com/') ||
+          (id === 'apps' && q.source.startsWith('rayfin-docs:'));
+        expect(ok, `${q.id}: ${q.source}`).toBe(true);
+      }
+    }
+  );
+
+  it.each(chapters.map((c) => [c.id, c] as const))(
     '%s: has an arrange or match puzzle',
     (_id, chapter) => {
       expect(

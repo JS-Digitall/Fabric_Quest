@@ -96,9 +96,17 @@ describe('validateScene', () => {
     expect(issues.map((i) => i.field)).toContain('body');
   });
 
-  it('flags a source outside Microsoft Learn', () => {
-    const issues = validateScene({ ...choice, source: 'https://example.com' });
+  it('flags a source that is not a web link', () => {
+    const issues = validateScene({ ...choice, source: 'see the wiki' });
     expect(issues.map((i) => i.field)).toContain('source');
+  });
+
+  it('accepts a team’s own https source', () => {
+    const issues = validateScene({
+      ...choice,
+      source: 'https://wiki.contoso.com/onboarding',
+    });
+    expect(issues.map((i) => i.field)).not.toContain('source');
   });
 
   it('flags a chart bar without a number', () => {

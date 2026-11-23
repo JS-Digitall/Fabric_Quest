@@ -3,6 +3,7 @@ import { ExternalLink } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 import { PixelButton } from '../rpg/ui/kit';
+import { isLearnLink } from './source';
 
 function sourceLink(source: string) {
   if (source.startsWith('https://')) return source;
@@ -71,7 +72,7 @@ export function Feedback({
             rel="noreferrer"
             className="inline-flex items-center gap-100 text-300 font-semibold text-primary underline-offset-4 hover:underline"
           >
-            Learn more on Microsoft Learn{' '}
+            {isLearnLink(href) ? 'Learn more on Microsoft Learn' : 'Read the source'}{' '}
             <ExternalLink className="icon-size-200" aria-hidden />
           </a>
         ) : (

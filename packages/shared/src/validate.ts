@@ -15,7 +15,7 @@ export interface Issue {
 
 export const MAX_BODY = 4000;
 export const MIN_QUESTIONS_PER_DIFFICULTY = 4;
-const LEARN = /^https:\/\/learn\.microsoft\.com\//;
+const WEB_LINK = /^https:\/\/[^\s/]+\.[^\s]+$/;
 
 const label = (d: Difficulty) => d[0].toUpperCase() + d.slice(1);
 const blank = (s: unknown) => typeof s !== 'string' || s.trim() === '';
@@ -50,8 +50,8 @@ export function validateScene(scene: Scene, chapterId?: ChapterId): Issue[] {
   if (scene.explanation.includes('`'))
     add('explanation', 'Explanation can’t contain backticks');
   const docsOk = chapterId === 'apps' && scene.source.startsWith('rayfin-docs:');
-  if (!LEARN.test(scene.source) && !docsOk)
-    add('source', 'Source must be a https://learn.microsoft.com/ link');
+  if (!WEB_LINK.test(scene.source) && !docsOk)
+    add('source', 'Source must be an https:// link');
   if (scene.difficulties.length === 0)
     add('difficulties', 'Pick at least one difficulty');
 
